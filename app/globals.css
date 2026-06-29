@@ -130,3 +130,168 @@ body {
   color: var(--error);
   font-size: 0.9rem;
 }
+
+/* ---------------------------------------------------------------------------
+ * Authenticated app shell: header + tab content + fixed bottom navbar.
+ * Mobile-first (idea.md §1, §5).
+ * ------------------------------------------------------------------------- */
+
+.app-shell {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.1rem;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+
+.app-brand {
+  font-weight: 700;
+}
+
+.link-button {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 0.25rem;
+}
+
+.app-main {
+  flex: 1;
+  /* Leave room for the fixed navbar (incl. iOS safe area). */
+  padding: 1.25rem 1.1rem calc(6rem + env(safe-area-inset-bottom));
+}
+
+/* Center the shell on wider (tablet/desktop) viewports while staying
+ * phone-first. */
+@media (min-width: 36rem) {
+  .app-shell {
+    max-width: 30rem;
+    margin: 0 auto;
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+  }
+}
+
+/* Bottom navbar ----------------------------------------------------------- */
+
+.navbar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 20;
+  width: 100%;
+  max-width: 30rem;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  align-items: end;
+  background: var(--card);
+  border-top: 1px solid var(--border);
+  padding: 0.4rem 0.5rem calc(0.4rem + env(safe-area-inset-bottom));
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.05);
+}
+
+.nav-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  text-decoration: none;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.35rem 0;
+}
+
+.nav-icon {
+  font-size: 1.35rem;
+  line-height: 1;
+  opacity: 0.65;
+  filter: grayscale(0.4);
+  transition:
+    opacity 0.15s ease,
+    filter 0.15s ease;
+}
+
+.nav-tab-active {
+  color: var(--accent-ink);
+}
+
+.nav-tab-active .nav-icon {
+  opacity: 1;
+  filter: none;
+}
+
+/* Center "Cook" tab: a raised, always-colorful primary action. */
+.nav-tab-center .nav-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.25rem;
+  height: 3.25rem;
+  margin-top: -1.5rem;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--accent-ink);
+  opacity: 1;
+  filter: none;
+  box-shadow: 0 6px 14px rgba(246, 165, 165, 0.5);
+}
+
+.nav-tab-center.nav-tab-active .nav-icon {
+  box-shadow: 0 8px 20px rgba(246, 165, 165, 0.7);
+}
+
+/* Tab page placeholders --------------------------------------------------- */
+
+.tab-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.6rem;
+  padding-top: 1.5rem;
+}
+
+.tab-title {
+  margin: 0;
+  font-size: 1.6rem;
+}
+
+.tab-subtitle {
+  margin: 0;
+  color: var(--muted);
+}
+
+.cook-button {
+  margin-top: 1.75rem;
+  width: 9rem;
+  height: 9rem;
+  border-radius: 50%;
+  border: none;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  box-shadow: 0 10px 24px rgba(246, 165, 165, 0.5);
+  transition: transform 0.1s ease;
+}
+
+.cook-button:active {
+  transform: scale(0.97);
+}
