@@ -11,11 +11,13 @@ import { DeleteRecipeUseCase } from '@application/use-cases/DeleteRecipeUseCase'
 import { EnsureUserUseCase } from '@application/use-cases/EnsureUserUseCase';
 import { GetRecipeUseCase } from '@application/use-cases/GetRecipeUseCase';
 import { ListRecipesUseCase } from '@application/use-cases/ListRecipesUseCase';
+import { LogCookSessionUseCase } from '@application/use-cases/LogCookSessionUseCase';
 import { ParseRecipeUseCase } from '@application/use-cases/ParseRecipeUseCase';
 import { SaveRecipeSectionsUseCase } from '@application/use-cases/SaveRecipeSectionsUseCase';
 import { UpdateRecipeUseCase } from '@application/use-cases/UpdateRecipeUseCase';
 
 import { AnthropicRecipeParser } from '@infrastructure/llm/AnthropicRecipeParser';
+import { SupabaseCookSessionRepository } from '@infrastructure/repositories/SupabaseCookSessionRepository';
 import { SupabaseRecipeRepository } from '@infrastructure/repositories/SupabaseRecipeRepository';
 import { SupabaseUserRepository } from '@infrastructure/repositories/SupabaseUserRepository';
 
@@ -28,6 +30,7 @@ let getRecipeUseCase: GetRecipeUseCase | null = null;
 let saveRecipeSectionsUseCase: SaveRecipeSectionsUseCase | null = null;
 let updateRecipeUseCase: UpdateRecipeUseCase | null = null;
 let deleteRecipeUseCase: DeleteRecipeUseCase | null = null;
+let logCookSessionUseCase: LogCookSessionUseCase | null = null;
 
 /** A single repository instance, reused across the recipe use cases. */
 let recipeRepository: SupabaseRecipeRepository | null = null;
@@ -36,6 +39,15 @@ function getRecipeRepository(): SupabaseRecipeRepository {
     recipeRepository = new SupabaseRecipeRepository();
   }
   return recipeRepository;
+}
+
+/** A single cook-session repository instance, reused across the cook use cases. */
+let cookSessionRepository: SupabaseCookSessionRepository | null = null;
+function getCookSessionRepository(): SupabaseCookSessionRepository {
+  if (!cookSessionRepository) {
+    cookSessionRepository = new SupabaseCookSessionRepository();
+  }
+  return cookSessionRepository;
 }
 
 /** A single recipe parser instance, reused across requests. */
@@ -120,4 +132,12 @@ export function getDeleteRecipeUseCase(): DeleteRecipeUseCase {
     deleteRecipeUseCase = new DeleteRecipeUseCase(getRecipeRepository());
   }
   return deleteRecipeUseCase;
+}
+
+/** Lazily build and cache the "log a completed cook" use case (idea.md §3, §4). */
+export function getLogCookSessionUseCase(): LogCookSessionUseCase {
+  if (!logCookSessionUseCase) {
+    logCookSessionUseCase = new LogCookSessionUseCase(getCookSessionRepository());
+  }
+  return logCookSessionUseCase;
 }

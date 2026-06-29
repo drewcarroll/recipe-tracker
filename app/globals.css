@@ -791,3 +791,341 @@ body {
 .save-status-error {
   color: var(--error);
 }
+
+/* ---------------------------------------------------------------------------
+ * Guided cook flow (idea.md §3): recipe picker, staged walkthrough, congrats.
+ * ------------------------------------------------------------------------- */
+
+/* Recipe picker ----------------------------------------------------------- */
+
+.cook-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.cook-picker-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.cook-picker-head .tab-title {
+  text-align: left;
+}
+
+/* Staged flow shell ------------------------------------------------------- */
+
+.cook-flow {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.cook-flow-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cook-flow-head .button-ghost {
+  padding-left: 0;
+}
+
+.cook-timer {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--accent-ink);
+}
+
+.cook-recipe-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.cook-recipe-icon {
+  flex: none;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+}
+
+.cook-recipe-name {
+  font-weight: 700;
+  font-size: 1.15rem;
+}
+
+/* Stage progress indicator ------------------------------------------------ */
+
+.cook-stepper {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.4rem;
+}
+
+.cook-stepper-item {
+  text-align: center;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--muted);
+  padding: 0.4rem 0.25rem;
+  border-radius: 0.6rem;
+  border: 1px solid var(--border);
+  background: var(--card);
+}
+
+.cook-stepper-current {
+  color: var(--accent-ink);
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.cook-stepper-done {
+  color: var(--accent-ink);
+  background: var(--pastel-blush);
+  border-color: var(--pastel-blush);
+}
+
+/* Stage body card --------------------------------------------------------- */
+
+.cook-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.25rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+}
+
+.cook-stage-title {
+  margin: 0;
+  font-size: 1.35rem;
+}
+
+.cook-stage-hint {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+/* Ingredients checklist (read-only) --------------------------------------- */
+
+.cook-ingredient-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.cook-ingredient {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.55rem 0.65rem;
+  background: var(--bg);
+  border-radius: 0.6rem;
+}
+
+.cook-ingredient-amount {
+  flex: none;
+  font-weight: 700;
+  color: var(--accent-ink);
+  min-width: 3.5rem;
+}
+
+.cook-ingredient-name {
+  color: var(--ink);
+}
+
+/* Prep checklist (tap to mark done) --------------------------------------- */
+
+.cook-checklist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.cook-check {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  width: 100%;
+  text-align: left;
+  padding: 0.7rem 0.75rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  cursor: pointer;
+  font-size: 1rem;
+  color: var(--ink);
+  transition:
+    border-color 0.1s ease,
+    background 0.1s ease;
+}
+
+.cook-check-box {
+  flex: none;
+  width: 1.6rem;
+  height: 1.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--border);
+  border-radius: 0.5rem;
+  font-weight: 800;
+  color: var(--accent-ink);
+}
+
+.cook-check-done {
+  border-color: var(--accent);
+  background: var(--pastel-blush);
+}
+
+.cook-check-done .cook-check-box {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+.cook-check-done .cook-check-text {
+  text-decoration: line-through;
+  color: var(--muted);
+}
+
+/* Steps one-by-one -------------------------------------------------------- */
+
+.cook-step-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.cook-step-count {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.cook-progress-track {
+  display: block;
+  width: 100%;
+  height: 0.4rem;
+  border-radius: 999px;
+  background: var(--border);
+  overflow: hidden;
+}
+
+.cook-progress-fill {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  border-radius: 999px;
+  transition: width 0.2s ease;
+}
+
+.cook-step-card {
+  align-items: flex-start;
+  min-height: 9rem;
+}
+
+.cook-step-number {
+  flex: none;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-weight: 800;
+  font-size: 1.2rem;
+}
+
+.cook-step-text {
+  margin: 0;
+  font-size: 1.25rem;
+  line-height: 1.5;
+}
+
+/* Stage action footer ----------------------------------------------------- */
+
+.cook-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+/* Congrats screen --------------------------------------------------------- */
+
+.cook-congrats {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.75rem;
+  padding: 2rem 1rem 1rem;
+}
+
+.cook-congrats-emoji {
+  font-size: 3.5rem;
+  line-height: 1;
+}
+
+.cook-congrats-title {
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+.cook-congrats-sub {
+  margin: 0;
+  color: var(--muted);
+}
+
+.cook-congrats-time {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  margin: 0.5rem 0;
+  padding: 1rem 2rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+}
+
+.cook-congrats-time-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.cook-congrats-time-value {
+  font-variant-numeric: tabular-nums;
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--accent-ink);
+}
+
+.cook-congrats .button {
+  margin-top: 0.75rem;
+}
