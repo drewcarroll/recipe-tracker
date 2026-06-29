@@ -225,10 +225,15 @@ export const stepInputSchema = z.object({
 });
 export type StepInput = z.infer<typeof stepInputSchema>;
 
-export const createRecipeInputSchema = z.object({
+/** A recipe's editable basic info (idea.md §2): name, color, icon. */
+export const recipeBasicsSchema = z.object({
   name: z.string().min(1),
   color: z.string().min(1),
   icon: z.string().min(1),
+});
+export type RecipeBasics = z.infer<typeof recipeBasicsSchema>;
+
+export const createRecipeInputSchema = recipeBasicsSchema.extend({
   ingredients: z.array(ingredientInputSchema).default([]),
   prep: z.array(prepItemInputSchema).default([]),
   steps: z.array(stepInputSchema).default([]),

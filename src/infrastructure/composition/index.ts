@@ -5,6 +5,7 @@
  * never import repositories or the database client directly.
  */
 
+import { CreateRecipeUseCase } from '@application/use-cases/CreateRecipeUseCase';
 import { EnsureUserUseCase } from '@application/use-cases/EnsureUserUseCase';
 import { GetRecipeUseCase } from '@application/use-cases/GetRecipeUseCase';
 import { ListRecipesUseCase } from '@application/use-cases/ListRecipesUseCase';
@@ -15,6 +16,7 @@ import { SupabaseUserRepository } from '@infrastructure/repositories/SupabaseUse
 
 let ensureUserUseCase: EnsureUserUseCase | null = null;
 let listRecipesUseCase: ListRecipesUseCase | null = null;
+let createRecipeUseCase: CreateRecipeUseCase | null = null;
 let getRecipeUseCase: GetRecipeUseCase | null = null;
 let saveRecipeSectionsUseCase: SaveRecipeSectionsUseCase | null = null;
 
@@ -41,6 +43,14 @@ export function getListRecipesUseCase(): ListRecipesUseCase {
     listRecipesUseCase = new ListRecipesUseCase(getRecipeRepository());
   }
   return listRecipesUseCase;
+}
+
+/** Lazily build and cache the create-blank-recipe use case. */
+export function getCreateRecipeUseCase(): CreateRecipeUseCase {
+  if (!createRecipeUseCase) {
+    createRecipeUseCase = new CreateRecipeUseCase(getRecipeRepository());
+  }
+  return createRecipeUseCase;
 }
 
 /** Lazily build and cache the recipe-detail load use case. */

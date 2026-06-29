@@ -4,6 +4,7 @@ import type {
   IngredientInput,
   PrepItem,
   PrepItemInput,
+  RecipeBasics,
   RecipeDetail,
   RecipeSummary,
   Step,
@@ -63,6 +64,21 @@ export class SupabaseRecipeRepository implements RecipeRepository {
   async listSummaries(username: string): Promise<RecipeSummary[]> {
     const rows = await recipes.listRecipesWithStats(getServiceRoleClient(), username);
     return rows.map(toSummary);
+  }
+
+  async create(username: string, basics: RecipeBasics): Promise<RecipeSummary> {
+    const row = await recipes.createRecipe(getServiceRoleClient(), username, basics);
+    // A brand-new recipe has no cook sessions yet, so Times cooked starts at 0.
+    return {
+      id: row.id,
+      name: row.name,
+      color: row.color,
+      icon: row.icon,
+      username: row.username,
+      timesCooked: 0,
+      createdAt: row.created_at,
+      updatedAt: row.updated_at,
+    };
   }
 
   async getDetail(username: string, recipeId: string): Promise<RecipeDetail | null> {

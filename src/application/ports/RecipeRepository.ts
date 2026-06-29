@@ -3,6 +3,7 @@ import type {
   IngredientInput,
   PrepItem,
   PrepItemInput,
+  RecipeBasics,
   RecipeDetail,
   RecipeSummary,
   Step,
@@ -20,6 +21,12 @@ export interface RecipeRepository {
    * (idea.md §2), each carrying its derived "Times cooked" count. Newest first.
    */
   listSummaries(username: string): Promise<RecipeSummary[]>;
+
+  /**
+   * Create a new, empty recipe from its basic info (idea.md §2): name, color,
+   * icon. Returns the created recipe as a summary (Times cooked starts at 0).
+   */
+  create(username: string, basics: RecipeBasics): Promise<RecipeSummary>;
 
   /**
    * Load a single recipe with its ordered ingredients, prep, and steps for the

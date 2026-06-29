@@ -582,6 +582,31 @@ body {
   font-size: 0.85rem;
 }
 
+/* Create-recipe form ------------------------------------------------------ */
+
+.create-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.create-page-head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.create-page-head .button-ghost {
+  align-self: flex-start;
+  padding-left: 0;
+}
+
+.create-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
 /* Recipe detail / editor page -------------------------------------------- */
 
 .recipe-detail {
