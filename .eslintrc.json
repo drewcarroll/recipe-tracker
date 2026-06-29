@@ -38,6 +38,22 @@
     {
       "files": ["src/infrastructure/**/*.{ts,tsx}"],
       "rules": { "no-restricted-imports": "off" }
+    },
+    {
+      "files": ["app/**/*.{ts,tsx}"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": ["@domain/*", "**/domain/*", "@interfaces/*", "**/interfaces/*"],
+                "message": "The app/ framework boundary wires use cases via the application layer and the infrastructure composition root; it must not import domain or interfaces directly."
+              }
+            ]
+          }
+        ]
+      }
     }
   ]
 }
