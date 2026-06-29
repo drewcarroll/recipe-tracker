@@ -3,6 +3,7 @@
 import type { ReactNode } from 'react';
 
 import { BottomNav } from '../_components/BottomNav';
+import { Button } from '../_components/ui/Button';
 import { useUser } from '../_components/user-context';
 
 /**
@@ -25,9 +26,9 @@ export default function AppLayout({ children }: { children: ReactNode }): JSX.El
     <div className="app-shell">
       <header className="app-header">
         <span className="app-brand">🍳 Recipe Tracker</span>
-        <button className="link-button" type="button" onClick={signOut}>
+        <Button variant="ghost" onClick={signOut}>
           Sign out
-        </button>
+        </Button>
       </header>
       <main className="app-main">{children}</main>
       <BottomNav />

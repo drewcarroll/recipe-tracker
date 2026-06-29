@@ -7,6 +7,16 @@
   --accent-ink: #5b1d1d;
   --border: #efe3da;
   --error: #c0392b;
+
+  /* Fixed pastel palette tokens (idea.md §2). Mirrors app/_design/palette.ts. */
+  --pastel-blush: #fcdcdc;
+  --pastel-peach: #ffe3c9;
+  --pastel-butter: #fbf0c0;
+  --pastel-mint: #d4f0dd;
+  --pastel-sky: #d6e8fb;
+  --pastel-lavender: #e6dcfb;
+  --pastel-rose: #fbd9ec;
+  --pastel-sage: #e4ebd4;
 }
 
 * {
@@ -98,8 +108,11 @@ body {
 }
 
 .button {
-  width: 100%;
-  padding: 0.8rem 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.8rem 1.1rem;
   font-size: 1rem;
   font-weight: 700;
   color: var(--accent-ink);
@@ -107,11 +120,17 @@ body {
   border: none;
   border-radius: 0.75rem;
   cursor: pointer;
-  transition: filter 0.15s ease;
+  transition:
+    filter 0.15s ease,
+    transform 0.1s ease;
 }
 
 .button:hover:not(:disabled) {
   filter: brightness(0.97);
+}
+
+.button:active:not(:disabled) {
+  transform: scale(0.98);
 }
 
 .button:disabled {
@@ -119,10 +138,22 @@ body {
   cursor: not-allowed;
 }
 
+/* Stretch to the container width. */
+.button-block {
+  width: 100%;
+}
+
 .button-secondary {
   background: transparent;
   color: var(--muted);
   border: 1px solid var(--border);
+}
+
+.button-ghost {
+  background: transparent;
+  color: var(--muted);
+  font-weight: 600;
+  padding: 0.4rem 0.6rem;
 }
 
 .error {
@@ -156,15 +187,6 @@ body {
 
 .app-brand {
   font-weight: 700;
-}
-
-.link-button {
-  background: none;
-  border: none;
-  color: var(--muted);
-  font-size: 0.9rem;
-  cursor: pointer;
-  padding: 0.25rem;
 }
 
 .app-main {
@@ -294,4 +316,126 @@ body {
 
 .cook-button:active {
   transform: scale(0.97);
+}
+
+/* ---------------------------------------------------------------------------
+ * Design system: pastel color picker, icon picker, recipe card.
+ * ------------------------------------------------------------------------- */
+
+/* Pastel color picker ----------------------------------------------------- */
+
+.swatch-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.swatch {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  border: 2px solid rgba(0, 0, 0, 0.06);
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.1s ease;
+}
+
+.swatch:hover {
+  transform: scale(1.06);
+}
+
+.swatch-selected {
+  border-color: var(--ink);
+  box-shadow: 0 0 0 2px var(--bg) inset;
+}
+
+/* Curated icon picker ----------------------------------------------------- */
+
+.icon-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(3rem, 1fr));
+  gap: 0.5rem;
+}
+
+.icon-option {
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition:
+    transform 0.1s ease,
+    border-color 0.1s ease;
+}
+
+.icon-option:hover {
+  transform: scale(1.05);
+}
+
+.icon-option-selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(246, 165, 165, 0.3);
+}
+
+/* Recipe card ------------------------------------------------------------- */
+
+.recipe-card {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  width: 100%;
+  text-align: left;
+  padding: 0.85rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+}
+
+.recipe-card-button {
+  cursor: pointer;
+  transition:
+    transform 0.1s ease,
+    box-shadow 0.15s ease;
+}
+
+.recipe-card-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.recipe-card-icon {
+  flex: none;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+}
+
+.recipe-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.recipe-card-name {
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.recipe-card-meta {
+  color: var(--muted);
+  font-size: 0.85rem;
 }

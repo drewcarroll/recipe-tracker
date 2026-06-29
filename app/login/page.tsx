@@ -3,6 +3,8 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useState, type FormEvent } from 'react';
 
+import { Button } from '../_components/ui/Button';
+import { Card } from '../_components/ui/Card';
 import { useUser } from '../_components/user-context';
 
 /**
@@ -44,7 +46,7 @@ export default function LoginPage(): JSX.Element {
 
   return (
     <main className="screen">
-      <form className="card" onSubmit={handleSubmit}>
+      <Card as="form" onSubmit={handleSubmit}>
         <h1 className="title">🍳 Recipe Tracker</h1>
         <p className="subtitle">Enter a username to get cooking. We&rsquo;ll create it if it&rsquo;s new.</p>
 
@@ -73,10 +75,10 @@ export default function LoginPage(): JSX.Element {
           </p>
         ) : null}
 
-        <button className="button" type="submit" disabled={submitting || value.trim().length === 0}>
+        <Button type="submit" block disabled={submitting || value.trim().length === 0}>
           {submitting ? 'Signing in…' : 'Continue'}
-        </button>
-      </form>
+        </Button>
+      </Card>
     </main>
   );
 }
