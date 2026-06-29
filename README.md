@@ -52,7 +52,7 @@ cp .env.example .env.local
 
 ### 4. Apply the database schema
 
-Run the SQL in `supabase/migrations/0001_create_recipes.sql` against your Supabase
+Run the SQL in `supabase/migrations/0001_initial_schema.sql` against your Supabase
 project (SQL editor or `supabase db push`).
 
 ### 5. Run the dev server
