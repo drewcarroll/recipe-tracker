@@ -24,6 +24,7 @@ export interface RecipeDTO {
   cookTimeMinutes: number;
   totalTimeMinutes: number;
   difficulty: RecipeDifficultyDTO;
+  timesCooked: number;
   createdAt: string;
   updatedAt: string;
 }

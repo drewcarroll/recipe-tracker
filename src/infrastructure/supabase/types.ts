@@ -13,6 +13,7 @@ export interface RecipeRow {
   prep_time_minutes: number;
   cook_time_minutes: number;
   difficulty: 'easy' | 'medium' | 'hard';
+  times_cooked: number;
   created_at: string;
   updated_at: string;
 }

@@ -22,6 +22,7 @@ export class RecipeMapper {
       cookTimeMinutes: recipe.cookTimeMinutes,
       totalTimeMinutes: recipe.totalTimeMinutes,
       difficulty: recipe.difficulty,
+      timesCooked: recipe.timesCooked,
       createdAt: recipe.createdAt.toISOString(),
       updatedAt: recipe.updatedAt.toISOString(),
     };

@@ -80,6 +80,7 @@ export class SupabaseRecipeRepository implements RecipeRepository {
       prep_time_minutes: recipe.prepTimeMinutes,
       cook_time_minutes: recipe.cookTimeMinutes,
       difficulty: recipe.difficulty,
+      times_cooked: recipe.timesCooked,
       created_at: recipe.createdAt.toISOString(),
       updated_at: recipe.updatedAt.toISOString(),
     };
@@ -96,6 +97,7 @@ export class SupabaseRecipeRepository implements RecipeRepository {
       prepTimeMinutes: row.prep_time_minutes,
       cookTimeMinutes: row.cook_time_minutes,
       difficulty: row.difficulty,
+      timesCooked: row.times_cooked ?? 0,
       createdAt: new Date(row.created_at),
       updatedAt: new Date(row.updated_at),
     });

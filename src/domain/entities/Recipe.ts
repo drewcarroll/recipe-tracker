@@ -14,6 +14,7 @@ interface RecipeProps {
   prepTimeMinutes: number;
   cookTimeMinutes: number;
   difficulty: RecipeDifficulty;
+  timesCooked: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -35,6 +36,7 @@ export class Recipe {
     prepTimeMinutes: number;
     cookTimeMinutes: number;
     difficulty?: RecipeDifficulty;
+    timesCooked?: number;
     createdAt?: Date;
     updatedAt?: Date;
   }): Recipe {
@@ -54,6 +56,10 @@ export class Recipe {
     if (props.prepTimeMinutes < 0 || props.cookTimeMinutes < 0) {
       throw new ValidationError('Times cannot be negative.');
     }
+    const timesCooked = props.timesCooked ?? 0;
+    if (!Number.isInteger(timesCooked) || timesCooked < 0) {
+      throw new ValidationError('Times cooked must be a non-negative integer.');
+    }
 
     const now = new Date();
     return new Recipe({
@@ -66,6 +72,7 @@ export class Recipe {
       prepTimeMinutes: props.prepTimeMinutes,
       cookTimeMinutes: props.cookTimeMinutes,
       difficulty: props.difficulty ?? 'medium',
+      timesCooked,
       createdAt: props.createdAt ?? now,
       updatedAt: props.updatedAt ?? now,
     });
@@ -97,6 +104,9 @@ export class Recipe {
   }
   get difficulty(): RecipeDifficulty {
     return this.props.difficulty;
+  }
+  get timesCooked(): number {
+    return this.props.timesCooked;
   }
   get createdAt(): Date {
     return this.props.createdAt;
