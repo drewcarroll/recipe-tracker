@@ -1,5 +1,7 @@
 'use client';
 
+import type { Route } from 'next';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import type { RecipeSummary } from '@application/types';
@@ -23,6 +25,7 @@ type LoadState =
 
 export default function RecipesPage(): JSX.Element {
   const { username } = useUser();
+  const router = useRouter();
   const [state, setState] = useState<LoadState>({ status: 'loading' });
   const [choosing, setChoosing] = useState(false);
 
@@ -86,6 +89,7 @@ export default function RecipesPage(): JSX.Element {
                   color={recipe.color}
                   icon={recipe.icon}
                   timesCooked={recipe.timesCooked}
+                  onClick={() => router.push(`/recipes/${recipe.id}` as Route)}
                 />
               </li>
             ))}

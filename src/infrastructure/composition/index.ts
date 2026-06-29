@@ -6,13 +6,26 @@
  */
 
 import { EnsureUserUseCase } from '@application/use-cases/EnsureUserUseCase';
+import { GetRecipeUseCase } from '@application/use-cases/GetRecipeUseCase';
 import { ListRecipesUseCase } from '@application/use-cases/ListRecipesUseCase';
+import { SaveRecipeSectionsUseCase } from '@application/use-cases/SaveRecipeSectionsUseCase';
 
 import { SupabaseRecipeRepository } from '@infrastructure/repositories/SupabaseRecipeRepository';
 import { SupabaseUserRepository } from '@infrastructure/repositories/SupabaseUserRepository';
 
 let ensureUserUseCase: EnsureUserUseCase | null = null;
 let listRecipesUseCase: ListRecipesUseCase | null = null;
+let getRecipeUseCase: GetRecipeUseCase | null = null;
+let saveRecipeSectionsUseCase: SaveRecipeSectionsUseCase | null = null;
+
+/** A single repository instance, reused across the recipe use cases. */
+let recipeRepository: SupabaseRecipeRepository | null = null;
+function getRecipeRepository(): SupabaseRecipeRepository {
+  if (!recipeRepository) {
+    recipeRepository = new SupabaseRecipeRepository();
+  }
+  return recipeRepository;
+}
 
 /** Lazily build and cache the username "log in / sign up" use case. */
 export function getEnsureUserUseCase(): EnsureUserUseCase {
@@ -25,7 +38,23 @@ export function getEnsureUserUseCase(): EnsureUserUseCase {
 /** Lazily build and cache the "Your Recipes" list use case. */
 export function getListRecipesUseCase(): ListRecipesUseCase {
   if (!listRecipesUseCase) {
-    listRecipesUseCase = new ListRecipesUseCase(new SupabaseRecipeRepository());
+    listRecipesUseCase = new ListRecipesUseCase(getRecipeRepository());
   }
   return listRecipesUseCase;
+}
+
+/** Lazily build and cache the recipe-detail load use case. */
+export function getGetRecipeUseCase(): GetRecipeUseCase {
+  if (!getRecipeUseCase) {
+    getRecipeUseCase = new GetRecipeUseCase(getRecipeRepository());
+  }
+  return getRecipeUseCase;
+}
+
+/** Lazily build and cache the editable-sections save use case. */
+export function getSaveRecipeSectionsUseCase(): SaveRecipeSectionsUseCase {
+  if (!saveRecipeSectionsUseCase) {
+    saveRecipeSectionsUseCase = new SaveRecipeSectionsUseCase(getRecipeRepository());
+  }
+  return saveRecipeSectionsUseCase;
 }

@@ -121,6 +121,25 @@ export const recipeSummarySchema = z.object({
 });
 export type RecipeSummary = z.infer<typeof recipeSummarySchema>;
 
+/**
+ * A recipe with its full, ordered contents for the detail/editor page
+ * (idea.md §2): basic info plus the ingredients, prep, and steps lists. Backs
+ * the editable sections.
+ */
+export const recipeDetailSchema = z.object({
+  id: z.string().uuid(),
+  name: z.string().min(1),
+  color: z.string().min(1),
+  icon: z.string().min(1),
+  username: usernameSchema,
+  ingredients: z.array(ingredientSchema),
+  prep: z.array(prepItemSchema),
+  steps: z.array(stepSchema),
+  createdAt: timestampSchema,
+  updatedAt: timestampSchema,
+});
+export type RecipeDetail = z.infer<typeof recipeDetailSchema>;
+
 // ---------------------------------------------------------------------------
 // Deviation — something done differently during a cook (idea.md §3).
 // Free-text note, stored on the session (matches the `deviations` jsonb column,
