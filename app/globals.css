@@ -97,6 +97,13 @@ body {
   color: var(--ink);
 }
 
+.textarea {
+  resize: vertical;
+  min-height: 8rem;
+  line-height: 1.5;
+  font-family: inherit;
+}
+
 .input:focus {
   outline: none;
   border-color: var(--accent);

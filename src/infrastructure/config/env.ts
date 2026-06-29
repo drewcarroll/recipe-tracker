@@ -19,11 +19,17 @@ const serverSchema = z.object({
   serviceRoleKey: z.string().min(1, 'SUPABASE_SERVICE_ROLE_KEY is required'),
 });
 
+const anthropicSchema = z.object({
+  apiKey: z.string().min(1, 'ANTHROPIC_API_KEY is required'),
+});
+
 export type PublicSupabaseConfig = z.infer<typeof publicSchema>;
 export type ServerSupabaseConfig = z.infer<typeof serverSchema>;
+export type AnthropicConfig = z.infer<typeof anthropicSchema>;
 
 let publicConfig: PublicSupabaseConfig | null = null;
 let serverConfig: ServerSupabaseConfig | null = null;
+let anthropicConfig: AnthropicConfig | null = null;
 
 /** URL + anon key — safe to use in the browser (protected by RLS). */
 export function getPublicSupabaseConfig(): PublicSupabaseConfig {
@@ -48,4 +54,18 @@ export function getServerSupabaseConfig(): ServerSupabaseConfig {
     });
   }
   return serverConfig;
+}
+
+/**
+ * Anthropic API key — SERVER ONLY. The "Create using AI" recipe parser runs
+ * through a backend route so the key is never exposed to the browser
+ * (idea.md §6).
+ */
+export function getAnthropicConfig(): AnthropicConfig {
+  if (!anthropicConfig) {
+    anthropicConfig = anthropicSchema.parse({
+      apiKey: process.env.ANTHROPIC_API_KEY,
+    });
+  }
+  return anthropicConfig;
 }

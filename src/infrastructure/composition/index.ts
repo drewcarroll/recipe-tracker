@@ -5,18 +5,21 @@
  * never import repositories or the database client directly.
  */
 
+import { CreateRecipeFromTextUseCase } from '@application/use-cases/CreateRecipeFromTextUseCase';
 import { CreateRecipeUseCase } from '@application/use-cases/CreateRecipeUseCase';
 import { EnsureUserUseCase } from '@application/use-cases/EnsureUserUseCase';
 import { GetRecipeUseCase } from '@application/use-cases/GetRecipeUseCase';
 import { ListRecipesUseCase } from '@application/use-cases/ListRecipesUseCase';
 import { SaveRecipeSectionsUseCase } from '@application/use-cases/SaveRecipeSectionsUseCase';
 
+import { AnthropicRecipeParser } from '@infrastructure/llm/AnthropicRecipeParser';
 import { SupabaseRecipeRepository } from '@infrastructure/repositories/SupabaseRecipeRepository';
 import { SupabaseUserRepository } from '@infrastructure/repositories/SupabaseUserRepository';
 
 let ensureUserUseCase: EnsureUserUseCase | null = null;
 let listRecipesUseCase: ListRecipesUseCase | null = null;
 let createRecipeUseCase: CreateRecipeUseCase | null = null;
+let createRecipeFromTextUseCase: CreateRecipeFromTextUseCase | null = null;
 let getRecipeUseCase: GetRecipeUseCase | null = null;
 let saveRecipeSectionsUseCase: SaveRecipeSectionsUseCase | null = null;
 
@@ -27,6 +30,15 @@ function getRecipeRepository(): SupabaseRecipeRepository {
     recipeRepository = new SupabaseRecipeRepository();
   }
   return recipeRepository;
+}
+
+/** A single recipe parser instance, reused across requests. */
+let recipeParser: AnthropicRecipeParser | null = null;
+function getRecipeParser(): AnthropicRecipeParser {
+  if (!recipeParser) {
+    recipeParser = new AnthropicRecipeParser();
+  }
+  return recipeParser;
 }
 
 /** Lazily build and cache the username "log in / sign up" use case. */
@@ -51,6 +63,17 @@ export function getCreateRecipeUseCase(): CreateRecipeUseCase {
     createRecipeUseCase = new CreateRecipeUseCase(getRecipeRepository());
   }
   return createRecipeUseCase;
+}
+
+/** Lazily build and cache the "Create using AI" (paste → structured) use case. */
+export function getCreateRecipeFromTextUseCase(): CreateRecipeFromTextUseCase {
+  if (!createRecipeFromTextUseCase) {
+    createRecipeFromTextUseCase = new CreateRecipeFromTextUseCase(
+      getRecipeParser(),
+      getRecipeRepository(),
+    );
+  }
+  return createRecipeFromTextUseCase;
 }
 
 /** Lazily build and cache the recipe-detail load use case. */
