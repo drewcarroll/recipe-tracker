@@ -1,0 +1,43 @@
+{
+  "extends": ["next/core-web-vitals", "prettier"],
+  "rules": {
+    "no-restricted-imports": [
+      "error",
+      {
+        "patterns": [
+          {
+            "group": [
+              "@infrastructure/*",
+              "**/infrastructure/*",
+              "@interfaces/*",
+              "**/interfaces/*"
+            ],
+            "message": "Domain and Application layers must not import from infrastructure or interfaces. Dependencies point inward only."
+          }
+        ]
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": ["src/interfaces/**/*.{ts,tsx}"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": ["@domain/*", "**/domain/*", "@infrastructure/*", "**/infrastructure/*"],
+                "message": "Interfaces must only depend on the application layer. Go through use cases."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["src/infrastructure/**/*.{ts,tsx}"],
+      "rules": { "no-restricted-imports": "off" }
+    }
+  ]
+}
