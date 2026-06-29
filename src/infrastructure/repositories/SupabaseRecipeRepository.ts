@@ -4,7 +4,7 @@ import { DomainError } from '@domain/errors/DomainError';
 import { RecipeRepository } from '@domain/repositories/RecipeRepository';
 import { Ingredient } from '@domain/value-objects/Ingredient';
 import { RecipeId } from '@domain/value-objects/RecipeId';
-import { Database, RecipeRow } from '../supabase/types';
+import { Database, RecipeRow, RecipeWithStatsRow } from '../supabase/types';
 
 /**
  * Supabase-backed implementation of the RecipeRepository domain interface.
@@ -13,6 +13,8 @@ import { Database, RecipeRow } from '../supabase/types';
  */
 export class SupabaseRecipeRepository implements RecipeRepository {
   private static readonly TABLE = 'recipes';
+  /** Read model that exposes each recipe with its derived times-cooked count. */
+  private static readonly VIEW = 'recipes_with_stats';
 
   constructor(private readonly client: SupabaseClient<Database>) {}
 
@@ -29,7 +31,7 @@ export class SupabaseRecipeRepository implements RecipeRepository {
 
   async findById(id: RecipeId): Promise<Recipe | null> {
     const { data, error } = await this.client
-      .from(SupabaseRecipeRepository.TABLE)
+      .from(SupabaseRecipeRepository.VIEW)
       .select('*')
       .eq('id', id.toString())
       .maybeSingle();
@@ -42,7 +44,7 @@ export class SupabaseRecipeRepository implements RecipeRepository {
 
   async findAll(): Promise<Recipe[]> {
     const { data, error } = await this.client
-      .from(SupabaseRecipeRepository.TABLE)
+      .from(SupabaseRecipeRepository.VIEW)
       .select('*')
       .order('created_at', { ascending: false });
 
@@ -80,13 +82,12 @@ export class SupabaseRecipeRepository implements RecipeRepository {
       prep_time_minutes: recipe.prepTimeMinutes,
       cook_time_minutes: recipe.cookTimeMinutes,
       difficulty: recipe.difficulty,
-      times_cooked: recipe.timesCooked,
       created_at: recipe.createdAt.toISOString(),
       updated_at: recipe.updatedAt.toISOString(),
     };
   }
 
-  private static toDomain(row: RecipeRow): Recipe {
+  private static toDomain(row: RecipeWithStatsRow): Recipe {
     return Recipe.create({
       id: RecipeId.create(row.id),
       title: row.title,

@@ -13,9 +13,25 @@ export interface RecipeRow {
   prep_time_minutes: number;
   cook_time_minutes: number;
   difficulty: 'easy' | 'medium' | 'hard';
-  times_cooked: number;
   created_at: string;
   updated_at: string;
+}
+
+/**
+ * Row of the `recipes_with_stats` view: a recipe plus its derived stats.
+ * `times_cooked` is computed as the number of cook_sessions for the recipe.
+ */
+export interface RecipeWithStatsRow extends RecipeRow {
+  times_cooked: number;
+}
+
+/** A single recorded cooking session for a recipe. */
+export interface CookSessionRow {
+  id: string;
+  recipe_id: string;
+  cooked_at: string;
+  notes: string;
+  created_at: string;
 }
 
 export interface Database {
@@ -25,6 +41,16 @@ export interface Database {
         Row: RecipeRow;
         Insert: RecipeRow;
         Update: Partial<RecipeRow>;
+      };
+      cook_sessions: {
+        Row: CookSessionRow;
+        Insert: CookSessionRow;
+        Update: Partial<CookSessionRow>;
+      };
+    };
+    Views: {
+      recipes_with_stats: {
+        Row: RecipeWithStatsRow;
       };
     };
   };
