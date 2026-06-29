@@ -34,6 +34,12 @@ export interface RecipeRepository {
    */
   getDetail(username: string, recipeId: string): Promise<RecipeDetail | null>;
 
+  /** Update a recipe's basic info — name, color, icon (idea.md §2). */
+  updateBasics(username: string, recipeId: string, basics: RecipeBasics): Promise<void>;
+
+  /** Delete a recipe and its contents (idea.md §2). Cascades to its children. */
+  delete(username: string, recipeId: string): Promise<void>;
+
   /** Replace a recipe's whole ingredient list, returning the saved rows. */
   replaceIngredients(
     username: string,

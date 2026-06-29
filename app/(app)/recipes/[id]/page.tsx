@@ -4,12 +4,11 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 
-import type { IngredientInput, RecipeDetail } from '@application/types';
+import type { IngredientInput, RecipeBasics, RecipeDetail } from '@application/types';
 
 import { IngredientsEditor } from '../../../_components/IngredientsEditor';
-import { RecipeIcon } from '../../../_components/RecipeIcon';
+import { RecipeBasicsEditor } from '../../../_components/RecipeBasicsEditor';
 import { TextListEditor } from '../../../_components/TextListEditor';
-import { getPastel } from '../../../_design/palette';
 import { useUser } from '../../../_components/user-context';
 
 /**
@@ -99,7 +98,11 @@ export default function RecipeDetailPage(): JSX.Element {
   }
 
   const { recipe } = state;
-  const pastel = getPastel(recipe.color);
+
+  // Reflect a saved basic-info edit in local state without a full reload.
+  const applyBasics = (basics: RecipeBasics): void => {
+    setState({ status: 'ready', recipe: { ...recipe, ...basics } });
+  };
 
   return (
     <div className="recipe-detail">
@@ -107,16 +110,14 @@ export default function RecipeDetailPage(): JSX.Element {
         <Link className="button button-ghost recipe-detail-back" href="/recipes">
           ← Recipes
         </Link>
-        <div className="recipe-detail-title">
-          <span
-            className="recipe-card-icon"
-            style={{ background: pastel.value, color: pastel.ink }}
-            aria-hidden="true"
-          >
-            <RecipeIcon icon={recipe.icon} />
-          </span>
-          <h1 className="recipes-title">{recipe.name}</h1>
-        </div>
+        <RecipeBasicsEditor
+          recipeId={recipe.id}
+          username={username}
+          name={recipe.name}
+          color={recipe.color}
+          icon={recipe.icon}
+          onSaved={applyBasics}
+        />
       </header>
 
       <IngredientsEditor

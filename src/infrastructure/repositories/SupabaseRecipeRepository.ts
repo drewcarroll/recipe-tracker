@@ -81,6 +81,14 @@ export class SupabaseRecipeRepository implements RecipeRepository {
     };
   }
 
+  async updateBasics(username: string, recipeId: string, basics: RecipeBasics): Promise<void> {
+    await recipes.updateRecipe(getServiceRoleClient(), username, recipeId, basics);
+  }
+
+  async delete(username: string, recipeId: string): Promise<void> {
+    await recipes.deleteRecipe(getServiceRoleClient(), username, recipeId);
+  }
+
   async getDetail(username: string, recipeId: string): Promise<RecipeDetail | null> {
     const db = getServiceRoleClient();
     const recipe = await recipes.getRecipe(db, username, recipeId);

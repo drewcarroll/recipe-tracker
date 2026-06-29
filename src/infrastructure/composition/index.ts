@@ -7,10 +7,12 @@
 
 import { CreateRecipeFromTextUseCase } from '@application/use-cases/CreateRecipeFromTextUseCase';
 import { CreateRecipeUseCase } from '@application/use-cases/CreateRecipeUseCase';
+import { DeleteRecipeUseCase } from '@application/use-cases/DeleteRecipeUseCase';
 import { EnsureUserUseCase } from '@application/use-cases/EnsureUserUseCase';
 import { GetRecipeUseCase } from '@application/use-cases/GetRecipeUseCase';
 import { ListRecipesUseCase } from '@application/use-cases/ListRecipesUseCase';
 import { SaveRecipeSectionsUseCase } from '@application/use-cases/SaveRecipeSectionsUseCase';
+import { UpdateRecipeUseCase } from '@application/use-cases/UpdateRecipeUseCase';
 
 import { AnthropicRecipeParser } from '@infrastructure/llm/AnthropicRecipeParser';
 import { SupabaseRecipeRepository } from '@infrastructure/repositories/SupabaseRecipeRepository';
@@ -22,6 +24,8 @@ let createRecipeUseCase: CreateRecipeUseCase | null = null;
 let createRecipeFromTextUseCase: CreateRecipeFromTextUseCase | null = null;
 let getRecipeUseCase: GetRecipeUseCase | null = null;
 let saveRecipeSectionsUseCase: SaveRecipeSectionsUseCase | null = null;
+let updateRecipeUseCase: UpdateRecipeUseCase | null = null;
+let deleteRecipeUseCase: DeleteRecipeUseCase | null = null;
 
 /** A single repository instance, reused across the recipe use cases. */
 let recipeRepository: SupabaseRecipeRepository | null = null;
@@ -90,4 +94,20 @@ export function getSaveRecipeSectionsUseCase(): SaveRecipeSectionsUseCase {
     saveRecipeSectionsUseCase = new SaveRecipeSectionsUseCase(getRecipeRepository());
   }
   return saveRecipeSectionsUseCase;
+}
+
+/** Lazily build and cache the edit-basic-info use case. */
+export function getUpdateRecipeUseCase(): UpdateRecipeUseCase {
+  if (!updateRecipeUseCase) {
+    updateRecipeUseCase = new UpdateRecipeUseCase(getRecipeRepository());
+  }
+  return updateRecipeUseCase;
+}
+
+/** Lazily build and cache the delete-recipe use case. */
+export function getDeleteRecipeUseCase(): DeleteRecipeUseCase {
+  if (!deleteRecipeUseCase) {
+    deleteRecipeUseCase = new DeleteRecipeUseCase(getRecipeRepository());
+  }
+  return deleteRecipeUseCase;
 }
