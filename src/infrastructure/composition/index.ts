@@ -6,10 +6,13 @@
  */
 
 import { EnsureUserUseCase } from '@application/use-cases/EnsureUserUseCase';
+import { ListRecipesUseCase } from '@application/use-cases/ListRecipesUseCase';
 
+import { SupabaseRecipeRepository } from '@infrastructure/repositories/SupabaseRecipeRepository';
 import { SupabaseUserRepository } from '@infrastructure/repositories/SupabaseUserRepository';
 
 let ensureUserUseCase: EnsureUserUseCase | null = null;
+let listRecipesUseCase: ListRecipesUseCase | null = null;
 
 /** Lazily build and cache the username "log in / sign up" use case. */
 export function getEnsureUserUseCase(): EnsureUserUseCase {
@@ -17,4 +20,12 @@ export function getEnsureUserUseCase(): EnsureUserUseCase {
     ensureUserUseCase = new EnsureUserUseCase(new SupabaseUserRepository());
   }
   return ensureUserUseCase;
+}
+
+/** Lazily build and cache the "Your Recipes" list use case. */
+export function getListRecipesUseCase(): ListRecipesUseCase {
+  if (!listRecipesUseCase) {
+    listRecipesUseCase = new ListRecipesUseCase(new SupabaseRecipeRepository());
+  }
+  return listRecipesUseCase;
 }

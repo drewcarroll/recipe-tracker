@@ -103,6 +103,24 @@ export const recipeSchema = z.object({
 });
 export type Recipe = z.infer<typeof recipeSchema>;
 
+/**
+ * Lightweight recipe row for the "Your Recipes" list (idea.md §2): the card
+ * fields plus the derived "Times cooked" count, without the heavy
+ * ingredients/prep/steps arrays. Backs the recipe list page.
+ */
+export const recipeSummarySchema = z.object({
+  id: z.string().uuid(),
+  name: z.string().min(1),
+  color: z.string().min(1),
+  icon: z.string().min(1),
+  username: usernameSchema,
+  /** Count of this recipe's cook sessions (idea.md §4). */
+  timesCooked: z.number().int().nonnegative(),
+  createdAt: timestampSchema,
+  updatedAt: timestampSchema,
+});
+export type RecipeSummary = z.infer<typeof recipeSummarySchema>;
+
 // ---------------------------------------------------------------------------
 // Deviation — something done differently during a cook (idea.md §3).
 // Free-text note, stored on the session (matches the `deviations` jsonb column,
