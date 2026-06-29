@@ -202,6 +202,14 @@ export const structuredRecipeSchema = z.object({
 });
 export type StructuredRecipe = z.infer<typeof structuredRecipeSchema>;
 
+/**
+ * Raw pasted recipe text accepted by the "paste → structured recipe" flow
+ * (idea.md §2). Trimmed, non-empty, and capped so a single request can't blow
+ * past the model's context window. Shared by the parse and create-from-text
+ * use cases so the input contract stays in one place.
+ */
+export const pastedRecipeTextSchema = z.string().trim().min(1).max(20000);
+
 // ---------------------------------------------------------------------------
 // Input / write schemas — for validating incoming data at the boundaries
 // (HTTP bodies, use-case inputs) before persistence. Server-generated fields

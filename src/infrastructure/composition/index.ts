@@ -11,6 +11,7 @@ import { DeleteRecipeUseCase } from '@application/use-cases/DeleteRecipeUseCase'
 import { EnsureUserUseCase } from '@application/use-cases/EnsureUserUseCase';
 import { GetRecipeUseCase } from '@application/use-cases/GetRecipeUseCase';
 import { ListRecipesUseCase } from '@application/use-cases/ListRecipesUseCase';
+import { ParseRecipeUseCase } from '@application/use-cases/ParseRecipeUseCase';
 import { SaveRecipeSectionsUseCase } from '@application/use-cases/SaveRecipeSectionsUseCase';
 import { UpdateRecipeUseCase } from '@application/use-cases/UpdateRecipeUseCase';
 
@@ -22,6 +23,7 @@ let ensureUserUseCase: EnsureUserUseCase | null = null;
 let listRecipesUseCase: ListRecipesUseCase | null = null;
 let createRecipeUseCase: CreateRecipeUseCase | null = null;
 let createRecipeFromTextUseCase: CreateRecipeFromTextUseCase | null = null;
+let parseRecipeUseCase: ParseRecipeUseCase | null = null;
 let getRecipeUseCase: GetRecipeUseCase | null = null;
 let saveRecipeSectionsUseCase: SaveRecipeSectionsUseCase | null = null;
 let updateRecipeUseCase: UpdateRecipeUseCase | null = null;
@@ -67,6 +69,14 @@ export function getCreateRecipeUseCase(): CreateRecipeUseCase {
     createRecipeUseCase = new CreateRecipeUseCase(getRecipeRepository());
   }
   return createRecipeUseCase;
+}
+
+/** Lazily build and cache the paste → structured recipe parse use case. */
+export function getParseRecipeUseCase(): ParseRecipeUseCase {
+  if (!parseRecipeUseCase) {
+    parseRecipeUseCase = new ParseRecipeUseCase(getRecipeParser());
+  }
+  return parseRecipeUseCase;
 }
 
 /** Lazily build and cache the "Create using AI" (paste → structured) use case. */

@@ -1,13 +1,11 @@
-import { z } from 'zod';
-
 import type { RecipeParser } from '@application/ports/RecipeParser';
 import type { RecipeRepository } from '@application/ports/RecipeRepository';
-import { recipeBasicsSchema, usernameSchema, type RecipeSummary } from '@application/types';
-
-/** Cap on pasted text so a single request can't blow past the model's context. */
-const MAX_TEXT_LENGTH = 20000;
-
-const pastedTextSchema = z.string().trim().min(1).max(MAX_TEXT_LENGTH);
+import {
+  pastedRecipeTextSchema,
+  recipeBasicsSchema,
+  usernameSchema,
+  type RecipeSummary,
+} from '@application/types';
 
 /**
  * "Create using AI" (idea.md §2): take pasted recipe text, have Claude parse it
@@ -23,7 +21,7 @@ export class CreateRecipeFromTextUseCase {
 
   async execute(rawUsername: string, rawText: string, rawBasics: unknown): Promise<RecipeSummary> {
     const username = usernameSchema.parse(rawUsername.trim());
-    const text = pastedTextSchema.parse(rawText);
+    const text = pastedRecipeTextSchema.parse(rawText);
     // Only color + icon come from the caller; the name comes from the parse.
     const { color, icon } = recipeBasicsSchema.omit({ name: true }).parse(rawBasics);
 
