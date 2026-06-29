@@ -12,23 +12,14 @@
 
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
-/** One ingredient as frozen into a cook session snapshot. */
-export interface SnapshotIngredient {
-  name: string;
-  quantity: string;
-  unit: string;
-}
-
 /**
- * Immutable, self-contained copy of a recipe's contents as-at-cook-time.
- * Stored in `cook_sessions.snapshot` so history never changes when a recipe
- * is later edited.
+ * The cook-session snapshot types are owned by the shared application module
+ * (the single source of truth, validated by Zod) and re-exported here so the
+ * `snapshot` column type and the validated domain type are the same type.
  */
-export interface RecipeSnapshot {
-  ingredients: SnapshotIngredient[];
-  prep: string[];
-  steps: string[];
-}
+export type { RecipeSnapshot, SnapshotIngredient } from '@application/types';
+
+import type { RecipeSnapshot } from '@application/types';
 
 export interface Database {
   public: {
