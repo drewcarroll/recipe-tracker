@@ -11,8 +11,11 @@ import { Button } from '../ui/Button';
  * finishes: the cook writes free-text notes, submits them to the backend, and
  * Claude returns suggested changes to the recipe. Each suggestion gets its own
  * Approve / Reject — approving applies it directly to the live recipe (via the
- * backend), rejecting discards it. The already-logged cook session is an
- * immutable snapshot, so these edits never touch history (idea.md §4).
+ * backend), rejecting discards it. Approved edits never touch history: the cook
+ * session is an immutable snapshot persisted when the flow finishes (idea.md §4).
+ *
+ * The notes text is owned by the parent flow (a controlled value) so the same
+ * notes are saved onto the cook session, not just turned into suggestions.
  *
  * Interface-layer only: all work goes through the `/api/recipes/[id]` routes,
  * so no infrastructure or business logic leaks in here.
@@ -45,11 +48,15 @@ const KIND_META: Record<RecipeSuggestion['kind'], { action: string; section: str
 export function NotesForNextTime({
   recipe,
   username,
+  notes,
+  onNotesChange,
 }: {
   recipe: RecipeDetail;
   username: string;
+  /** Controlled notes text, owned by the parent so it can be saved on finish. */
+  notes: string;
+  onNotesChange: (notes: string) => void;
 }): JSX.Element {
-  const [notes, setNotes] = useState('');
   const [phase, setPhase] = useState<Phase>({ status: 'editing' });
   const [submitError, setSubmitError] = useState<string | null>(null);
   // A single in-flight lock: applying changes one at a time keeps each apply
@@ -130,7 +137,7 @@ export function NotesForNextTime({
           className="input textarea cook-notes-input"
           placeholder="e.g. A bit too salty, and it needed 5 more minutes in the oven."
           value={notes}
-          onChange={(event) => setNotes(event.target.value)}
+          onChange={(event) => onNotesChange(event.target.value)}
           disabled={loading}
           rows={4}
         />
@@ -151,7 +158,7 @@ export function NotesForNextTime({
         <Button
           variant="secondary"
           onClick={() => {
-            setNotes('');
+            onNotesChange('');
             setPhase({ status: 'editing' });
           }}
         >

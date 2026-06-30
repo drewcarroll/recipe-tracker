@@ -1241,6 +1241,96 @@ body {
   margin-top: 0.75rem;
 }
 
+.cook-congrats-deviations {
+  width: 100%;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-top: 1rem;
+}
+
+.cook-congrats-deviations-label {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+/* Deviation capture during the cook (idea.md §3) ------------------------- */
+
+.cook-deviations {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  padding: 0.9rem;
+  background: var(--card);
+  border: 1px dashed var(--border);
+  border-radius: 1rem;
+}
+
+.cook-deviations-title {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.cook-deviations-hint {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.cook-deviation-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.cook-deviation-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.4rem 0.6rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 0.6rem;
+  font-size: 0.92rem;
+}
+
+.cook-deviation-text {
+  min-width: 0;
+}
+
+.cook-deviation-remove {
+  flex: none;
+  border: none;
+  background: none;
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1;
+  padding: 0.15rem;
+  cursor: pointer;
+}
+
+.cook-deviation-remove:hover {
+  color: var(--error);
+}
+
+.cook-deviation-add {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.cook-deviation-input {
+  flex: 1;
+  min-width: 0;
+}
+
 /* Notes for next time + suggested changes (idea.md §3) ------------------- */
 
 .cook-notes {

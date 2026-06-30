@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
-import { recipeSnapshotSchema } from '@application/types';
+import { deviationSchema, recipeSnapshotSchema } from '@application/types';
 import {
   getListCookSessionsUseCase,
   getLogCookSessionUseCase,
@@ -10,9 +10,10 @@ import {
 /**
  * Cook-session log endpoint (idea.md §3, §4). The guided cook flow POSTs here
  * when a cook finishes: it freezes the recipe's contents into an immutable
- * snapshot and records how long the cook took. The History tab GETs here to
- * list a user's past cooks. Deviations and post-cook notes arrive with the
- * later §3 work, so they are not part of the create contract yet.
+ * snapshot, records how long the cook took, and captures the deviations made
+ * during the cook plus the free-text "notes for next time". The History tab
+ * GETs here to list a user's past cooks. The snapshot is stored by value, so it
+ * is independent of the live recipe rows and later edits never alter it.
  */
 
 const querySchema = z.object({
@@ -24,6 +25,8 @@ const createBodySchema = z.object({
   recipeId: z.string().uuid().nullable(),
   recipeName: z.string().trim().min(1),
   snapshot: recipeSnapshotSchema,
+  deviations: z.array(deviationSchema).default([]),
+  notes: z.string().trim().max(2000).default(''),
   durationSeconds: z.number().int().nonnegative().default(0),
 });
 

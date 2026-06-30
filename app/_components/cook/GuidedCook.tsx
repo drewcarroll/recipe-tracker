@@ -7,16 +7,23 @@ import type { RecipeDetail } from '@application/types';
 import { getRecipeIconGlyph } from '../../_design/icons';
 import { getPastel } from '../../_design/palette';
 import { Button } from '../ui/Button';
+import { DeviationRecorder } from './DeviationRecorder';
 import { NotesForNextTime } from './NotesForNextTime';
 
 /**
  * The guided cook flow (idea.md §3): walk the cook through a single recipe one
  * stage at a time — ingredients check → guided prep → steps one-by-one → a
- * Congrats screen — while timing how long the whole cook takes. On finish it
- * logs an immutable cook session (with the elapsed time) so the cook shows up in
- * History and bumps the recipe's "Times cooked" count. The Congrats screen also
- * collects free-text "notes for next time" and turns them into approvable
- * suggested changes to the recipe (idea.md §3) via {@link NotesForNextTime}.
+ * Congrats screen — while timing how long the whole cook takes. Along the way
+ * the cook can record deviations ("did something differently"), and on the
+ * Congrats screen jot down "notes for next time".
+ *
+ * When the cook leaves the flow ("Done"), it writes a single IMMUTABLE cook
+ * session (idea.md §4): the recipe's contents frozen by value as a snapshot,
+ * the deviations, the notes, the elapsed duration and a timestamp. Storing it
+ * by value keeps it independent of the live recipe rows, so later edits —
+ * including AI-approved suggestions from {@link NotesForNextTime} — never alter
+ * this history entry. The saved session shows up in History and bumps the
+ * recipe's "Times cooked" count.
  */
 
 type Stage = 'ingredients' | 'prep' | 'steps' | 'congrats';
@@ -59,6 +66,12 @@ export function GuidedCook({
   const [stepIndex, setStepIndex] = useState(0);
   const [checkedPrep, setCheckedPrep] = useState<ReadonlySet<string>>(new Set());
 
+  // Captured during the cook and folded into the session on finish. Deviations
+  // are recorded in-the-moment on the working stages; notes are written on the
+  // congrats screen (and double as the source for "notes for next time").
+  const [deviations, setDeviations] = useState<string[]>([]);
+  const [notes, setNotes] = useState('');
+
   // Elapsed-time tracking. The cook clock starts the moment the guided flow
   // opens (the ingredients check) and freezes when the cook finishes.
   const startedAtRef = useRef<number>(Date.now());
@@ -76,45 +89,73 @@ export function GuidedCook({
     return () => window.clearInterval(id);
   }, [finalDuration]);
 
-  // Persist the finished cook as an immutable session (idea.md §4): freeze the
-  // recipe's contents by value so later edits never rewrite this history entry.
-  const logSession = useCallback(
-    async (durationSeconds: number): Promise<void> => {
-      setSaveState('saving');
-      try {
-        const response = await fetch('/api/cook-sessions', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            username,
-            recipeId: recipe.id,
-            recipeName: recipe.name,
-            durationSeconds,
-            snapshot: {
-              ingredients: recipe.ingredients.map(({ name, quantity, unit }) => ({
-                name,
-                quantity,
-                unit,
-              })),
-              prep: recipe.prep.map((item) => item.text),
-              steps: recipe.steps.map((item) => item.text),
-            },
-          }),
-        });
-        setSaveState(response.ok ? 'saved' : 'error');
-      } catch {
-        setSaveState('error');
-      }
-    },
-    [recipe, username],
-  );
-
   const finish = useCallback((): void => {
     const duration = Math.floor((Date.now() - startedAtRef.current) / 1000);
     setFinalDuration(duration);
     setStage('congrats');
-    void logSession(duration);
-  }, [logSession]);
+  }, []);
+
+  const addDeviation = useCallback((text: string): void => {
+    setDeviations((prev) => [...prev, text]);
+  }, []);
+
+  const removeDeviation = useCallback((index: number): void => {
+    setDeviations((prev) => prev.filter((_, i) => i !== index));
+  }, []);
+
+  // Persist the finished cook as a single IMMUTABLE session (idea.md §4): the
+  // recipe's contents frozen by value (independent of the live rows), plus the
+  // deviations, notes, duration and timestamp. Written once, when the cook
+  // leaves the flow. Returns whether the save succeeded.
+  const persistSession = useCallback(async (): Promise<boolean> => {
+    setSaveState('saving');
+    try {
+      const response = await fetch('/api/cook-sessions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username,
+          recipeId: recipe.id,
+          recipeName: recipe.name,
+          durationSeconds: finalDuration ?? 0,
+          deviations,
+          notes: notes.trim(),
+          snapshot: {
+            ingredients: recipe.ingredients.map(({ name, quantity, unit }) => ({
+              name,
+              quantity,
+              unit,
+            })),
+            prep: recipe.prep.map((item) => item.text),
+            steps: recipe.steps.map((item) => item.text),
+          },
+        }),
+      });
+      if (!response.ok) {
+        throw new Error('Save failed');
+      }
+      setSaveState('saved');
+      return true;
+    } catch {
+      setSaveState('error');
+      return false;
+    }
+  }, [recipe, username, finalDuration, deviations, notes]);
+
+  // "Done": save the session (once), then leave the flow. On failure we keep
+  // the user on the congrats screen so they can retry rather than lose the cook.
+  const handleDone = useCallback(async (): Promise<void> => {
+    if (saveState === 'saving') {
+      return;
+    }
+    if (saveState === 'saved') {
+      onExit();
+      return;
+    }
+    if (await persistSession()) {
+      onExit();
+    }
+  }, [saveState, persistSession, onExit]);
 
   const togglePrep = (id: string): void => {
     setCheckedPrep((prev) => {
@@ -149,18 +190,36 @@ export function GuidedCook({
             <span className="cook-congrats-time-value">{formatDuration(displaySeconds)}</span>
           </div>
 
-          {saveState === 'saving' && <p className="state-note">Saving to your history…</p>}
-          {saveState === 'saved' && <p className="state-note">Saved to your history.</p>}
+          {deviations.length > 0 && (
+            <div className="cook-congrats-deviations">
+              <span className="cook-congrats-deviations-label">
+                Deviation{deviations.length === 1 ? '' : 's'} recorded
+              </span>
+              <ul className="cook-deviation-list">
+                {deviations.map((deviation, index) => (
+                  <li key={index} className="cook-deviation-item">
+                    <span className="cook-deviation-text">{deviation}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          <NotesForNextTime
+            recipe={recipe}
+            username={username}
+            notes={notes}
+            onNotesChange={setNotes}
+          />
+
           {saveState === 'error' && (
             <p className="state-note state-note-error">
-              We couldn’t save this cook to your history.
+              We couldn’t save this cook to your history. Please try again.
             </p>
           )}
 
-          <NotesForNextTime recipe={recipe} username={username} />
-
-          <Button block onClick={onExit}>
-            Done
+          <Button block onClick={() => void handleDone()} disabled={saveState === 'saving'}>
+            {saveState === 'saving' ? 'Saving…' : saveState === 'error' ? 'Try again' : 'Done'}
           </Button>
         </div>
       </section>
@@ -341,6 +400,14 @@ export function GuidedCook({
             </div>
           </>
         ))}
+
+      {(stage === 'prep' || stage === 'steps') && (
+        <DeviationRecorder
+          deviations={deviations}
+          onAdd={addDeviation}
+          onRemove={removeDeviation}
+        />
+      )}
     </section>
   );
 }
