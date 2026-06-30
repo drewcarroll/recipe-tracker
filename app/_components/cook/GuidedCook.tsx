@@ -7,14 +7,16 @@ import type { RecipeDetail } from '@application/types';
 import { getRecipeIconGlyph } from '../../_design/icons';
 import { getPastel } from '../../_design/palette';
 import { Button } from '../ui/Button';
+import { NotesForNextTime } from './NotesForNextTime';
 
 /**
  * The guided cook flow (idea.md §3): walk the cook through a single recipe one
  * stage at a time — ingredients check → guided prep → steps one-by-one → a
  * Congrats screen — while timing how long the whole cook takes. On finish it
  * logs an immutable cook session (with the elapsed time) so the cook shows up in
- * History and bumps the recipe's "Times cooked" count. Deviations and post-cook
- * notes are a later §3 task and are intentionally not collected here.
+ * History and bumps the recipe's "Times cooked" count. The Congrats screen also
+ * collects free-text "notes for next time" and turns them into approvable
+ * suggested changes to the recipe (idea.md §3) via {@link NotesForNextTime}.
  */
 
 type Stage = 'ingredients' | 'prep' | 'steps' | 'congrats';
@@ -154,6 +156,8 @@ export function GuidedCook({
               We couldn’t save this cook to your history.
             </p>
           )}
+
+          <NotesForNextTime recipe={recipe} username={username} />
 
           <Button block onClick={onExit}>
             Done

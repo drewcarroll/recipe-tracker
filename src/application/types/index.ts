@@ -211,6 +211,85 @@ export type StructuredRecipe = z.infer<typeof structuredRecipeSchema>;
 export const pastedRecipeTextSchema = z.string().trim().min(1).max(20000);
 
 // ---------------------------------------------------------------------------
+// Post-cook notes → suggested changes (idea.md §3).
+//
+// After a cook, the user writes free-text "notes for next time". Claude turns
+// those notes into a list of discrete, independently-approvable changes to the
+// recipe. Each suggestion is one atomic edit so the user can Approve/Reject it
+// on its own; approved suggestions are applied directly to the live recipe.
+//
+// `update-*` / `remove-*` suggestions reference an existing item by its id (the
+// ids are handed to Claude in the prompt). Applying a suggestion whose target
+// id no longer exists is a safe no-op.
+// ---------------------------------------------------------------------------
+
+/** Free-text notes captured after finishing a cook. */
+export const cookNotesSchema = z.string().trim().min(1).max(2000);
+
+/** Short, human-readable label for a suggestion (shown beside Approve/Reject). */
+const suggestionSummarySchema = z.string().trim().min(1).max(280);
+
+/** Id of an existing recipe item a suggestion targets. */
+const targetIdSchema = z.string().min(1);
+
+export const recipeSuggestionSchema = z.discriminatedUnion('kind', [
+  z.object({
+    kind: z.literal('rename'),
+    summary: suggestionSummarySchema,
+    name: z.string().min(1),
+  }),
+  z.object({
+    kind: z.literal('add-ingredient'),
+    summary: suggestionSummarySchema,
+    ingredient: ingredientValueSchema,
+  }),
+  z.object({
+    kind: z.literal('update-ingredient'),
+    summary: suggestionSummarySchema,
+    ingredientId: targetIdSchema,
+    ingredient: ingredientValueSchema,
+  }),
+  z.object({
+    kind: z.literal('remove-ingredient'),
+    summary: suggestionSummarySchema,
+    ingredientId: targetIdSchema,
+  }),
+  z.object({
+    kind: z.literal('add-prep'),
+    summary: suggestionSummarySchema,
+    text: z.string().min(1),
+  }),
+  z.object({
+    kind: z.literal('update-prep'),
+    summary: suggestionSummarySchema,
+    prepId: targetIdSchema,
+    text: z.string().min(1),
+  }),
+  z.object({
+    kind: z.literal('remove-prep'),
+    summary: suggestionSummarySchema,
+    prepId: targetIdSchema,
+  }),
+  z.object({
+    kind: z.literal('add-step'),
+    summary: suggestionSummarySchema,
+    text: z.string().min(1),
+  }),
+  z.object({
+    kind: z.literal('update-step'),
+    summary: suggestionSummarySchema,
+    stepId: targetIdSchema,
+    text: z.string().min(1),
+  }),
+  z.object({
+    kind: z.literal('remove-step'),
+    summary: suggestionSummarySchema,
+    stepId: targetIdSchema,
+  }),
+]);
+export type RecipeSuggestion = z.infer<typeof recipeSuggestionSchema>;
+
+// ---------------------------------------------------------------------------
 // Input / write schemas — for validating incoming data at the boundaries
 // (HTTP bodies, use-case inputs) before persistence. Server-generated fields
 // (id, timestamps, position) are omitted or optional.

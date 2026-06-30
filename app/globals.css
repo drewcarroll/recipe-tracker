@@ -1129,3 +1129,114 @@ body {
 .cook-congrats .button {
   margin-top: 0.75rem;
 }
+
+/* Notes for next time + suggested changes (idea.md §3) ------------------- */
+
+.cook-notes {
+  width: 100%;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-top: 1rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
+}
+
+.cook-notes-title {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.cook-notes-hint {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.cook-notes-input {
+  min-height: 5.5rem;
+}
+
+.cook-suggestion-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.cook-suggestion {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 0.85rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 0.85rem;
+  transition:
+    opacity 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.cook-suggestion-approved {
+  border-color: var(--pastel-mint);
+  background: var(--pastel-mint);
+}
+
+.cook-suggestion-rejected {
+  opacity: 0.55;
+}
+
+.cook-suggestion-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.cook-suggestion-badge {
+  align-self: flex-start;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--accent-ink);
+}
+
+.cook-suggestion-summary {
+  font-size: 0.98rem;
+  line-height: 1.4;
+  color: var(--ink);
+}
+
+.cook-suggestion-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.cook-suggestion-actions .button {
+  padding: 0.5rem 0.9rem;
+  font-size: 0.9rem;
+}
+
+.cook-suggestion-status {
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.cook-suggestion-status-approved {
+  color: #2f7d52;
+}
+
+.cook-suggestion-status-rejected {
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.cook-suggestion-status-failed {
+  color: var(--error);
+  margin-right: auto;
+}

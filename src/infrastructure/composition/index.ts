@@ -5,6 +5,7 @@
  * never import repositories or the database client directly.
  */
 
+import { ApplyRecipeSuggestionUseCase } from '@application/use-cases/ApplyRecipeSuggestionUseCase';
 import { CreateRecipeFromTextUseCase } from '@application/use-cases/CreateRecipeFromTextUseCase';
 import { CreateRecipeUseCase } from '@application/use-cases/CreateRecipeUseCase';
 import { DeleteRecipeUseCase } from '@application/use-cases/DeleteRecipeUseCase';
@@ -14,8 +15,10 @@ import { ListRecipesUseCase } from '@application/use-cases/ListRecipesUseCase';
 import { LogCookSessionUseCase } from '@application/use-cases/LogCookSessionUseCase';
 import { ParseRecipeUseCase } from '@application/use-cases/ParseRecipeUseCase';
 import { SaveRecipeSectionsUseCase } from '@application/use-cases/SaveRecipeSectionsUseCase';
+import { SuggestRecipeChangesUseCase } from '@application/use-cases/SuggestRecipeChangesUseCase';
 import { UpdateRecipeUseCase } from '@application/use-cases/UpdateRecipeUseCase';
 
+import { AnthropicCookNotesInterpreter } from '@infrastructure/llm/AnthropicCookNotesInterpreter';
 import { AnthropicRecipeParser } from '@infrastructure/llm/AnthropicRecipeParser';
 import { SupabaseCookSessionRepository } from '@infrastructure/repositories/SupabaseCookSessionRepository';
 import { SupabaseRecipeRepository } from '@infrastructure/repositories/SupabaseRecipeRepository';
@@ -31,6 +34,8 @@ let saveRecipeSectionsUseCase: SaveRecipeSectionsUseCase | null = null;
 let updateRecipeUseCase: UpdateRecipeUseCase | null = null;
 let deleteRecipeUseCase: DeleteRecipeUseCase | null = null;
 let logCookSessionUseCase: LogCookSessionUseCase | null = null;
+let suggestRecipeChangesUseCase: SuggestRecipeChangesUseCase | null = null;
+let applyRecipeSuggestionUseCase: ApplyRecipeSuggestionUseCase | null = null;
 
 /** A single repository instance, reused across the recipe use cases. */
 let recipeRepository: SupabaseRecipeRepository | null = null;
@@ -57,6 +62,15 @@ function getRecipeParser(): AnthropicRecipeParser {
     recipeParser = new AnthropicRecipeParser();
   }
   return recipeParser;
+}
+
+/** A single post-cook notes interpreter instance, reused across requests. */
+let cookNotesInterpreter: AnthropicCookNotesInterpreter | null = null;
+function getCookNotesInterpreter(): AnthropicCookNotesInterpreter {
+  if (!cookNotesInterpreter) {
+    cookNotesInterpreter = new AnthropicCookNotesInterpreter();
+  }
+  return cookNotesInterpreter;
 }
 
 /** Lazily build and cache the username "log in / sign up" use case. */
@@ -140,4 +154,23 @@ export function getLogCookSessionUseCase(): LogCookSessionUseCase {
     logCookSessionUseCase = new LogCookSessionUseCase(getCookSessionRepository());
   }
   return logCookSessionUseCase;
+}
+
+/** Lazily build and cache the post-cook notes → suggested changes use case (idea.md §3). */
+export function getSuggestRecipeChangesUseCase(): SuggestRecipeChangesUseCase {
+  if (!suggestRecipeChangesUseCase) {
+    suggestRecipeChangesUseCase = new SuggestRecipeChangesUseCase(
+      getRecipeRepository(),
+      getCookNotesInterpreter(),
+    );
+  }
+  return suggestRecipeChangesUseCase;
+}
+
+/** Lazily build and cache the "apply an approved suggestion" use case (idea.md §3). */
+export function getApplyRecipeSuggestionUseCase(): ApplyRecipeSuggestionUseCase {
+  if (!applyRecipeSuggestionUseCase) {
+    applyRecipeSuggestionUseCase = new ApplyRecipeSuggestionUseCase(getRecipeRepository());
+  }
+  return applyRecipeSuggestionUseCase;
 }
