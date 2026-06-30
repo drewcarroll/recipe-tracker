@@ -6,6 +6,46 @@ import { structuredRecipeSchema, type StructuredRecipe } from '@application/type
 import { getAnthropicConfig } from '@infrastructure/config/env';
 
 /**
+ * Clean up the model's JSON before it is validated against the strict
+ * {@link structuredRecipeSchema}. Real-world pastes are messy (run-on lines,
+ * missing separators), so the model can emit a stray ingredient with no name
+ * or a blank prep/step line. Those would make the strict schema reject the
+ * whole recipe; instead we trim and drop the empty entries so a near-miss still
+ * yields a usable recipe rather than a total failure.
+ */
+function sanitizeStructuredRecipe(raw: unknown): unknown {
+  if (typeof raw !== 'object' || raw === null) {
+    return raw;
+  }
+  const record = raw as Record<string, unknown>;
+
+  const cleanStrings = (value: unknown): string[] =>
+    Array.isArray(value)
+      ? value
+          .map((item) => (typeof item === 'string' ? item.trim() : ''))
+          .filter((item) => item.length > 0)
+      : [];
+
+  const ingredients = Array.isArray(record.ingredients)
+    ? record.ingredients
+        .filter((item): item is Record<string, unknown> => typeof item === 'object' && item !== null)
+        .map((item) => ({
+          name: typeof item.name === 'string' ? item.name.trim() : '',
+          quantity: typeof item.quantity === 'string' ? item.quantity.trim() : '',
+          unit: typeof item.unit === 'string' ? item.unit.trim() : '',
+        }))
+        .filter((item) => item.name.length > 0)
+    : [];
+
+  return {
+    name: typeof record.name === 'string' ? record.name.trim() : record.name,
+    ingredients,
+    prep: cleanStrings(record.prep),
+    steps: cleanStrings(record.steps),
+  };
+}
+
+/**
  * Claude-backed {@link RecipeParser}. Sends the pasted text to Claude with a
  * JSON-schema output format so the response is constrained to our recipe shape,
  * then validates it against the shared {@link structuredRecipeSchema} (the LLM
@@ -67,7 +107,7 @@ export class AnthropicRecipeParser implements RecipeParser {
   async parse(text: string): Promise<StructuredRecipe> {
     const message = await this.getClient().messages.create({
       model: MODEL,
-      max_tokens: 4096,
+      max_tokens: 8192,
       system: SYSTEM_PROMPT,
       output_config: { format: { type: 'json_schema', schema: OUTPUT_SCHEMA } },
       messages: [{ role: 'user', content: text }],
@@ -76,13 +116,18 @@ export class AnthropicRecipeParser implements RecipeParser {
     if (message.stop_reason === 'refusal') {
       throw new Error('The recipe parser declined to process this text.');
     }
+    if (message.stop_reason === 'max_tokens') {
+      throw new Error('The recipe was too long to convert in one pass.');
+    }
 
     const json = message.content.find((block) => block.type === 'text')?.text;
     if (!json) {
       throw new Error('Claude did not return a structured recipe.');
     }
 
-    // Re-validate the untrusted model output against the canonical schema.
-    return structuredRecipeSchema.parse(JSON.parse(json));
+    // Re-validate the untrusted model output against the canonical schema,
+    // sanitizing first so a stray empty entry from a messy paste doesn't sink
+    // the whole recipe.
+    return structuredRecipeSchema.parse(sanitizeStructuredRecipe(JSON.parse(json)));
   }
 }
