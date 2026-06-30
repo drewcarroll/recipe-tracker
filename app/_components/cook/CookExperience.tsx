@@ -6,6 +6,7 @@ import type { RecipeDetail, RecipeSummary } from '@application/types';
 
 import { RecipeCard } from '../RecipeCard';
 import { Button } from '../ui/Button';
+import { Spinner } from '../ui/Spinner';
 import { useUser } from '../user-context';
 import { GuidedCook } from './GuidedCook';
 
@@ -117,7 +118,7 @@ export function CookExperience(): JSX.Element {
 
         {startError && <p className="state-note state-note-error">{startError}</p>}
 
-        {list.status === 'loading' && <p className="state-note">Loading your recipes…</p>}
+        {list.status === 'loading' && <Spinner label="Loading your recipes…" />}
 
         {list.status === 'error' && (
           <p className="state-note state-note-error">

@@ -9,6 +9,7 @@ import type { IngredientInput, RecipeBasics, RecipeDetail } from '@application/t
 import { IngredientsEditor } from '../../../_components/IngredientsEditor';
 import { RecipeBasicsEditor } from '../../../_components/RecipeBasicsEditor';
 import { TextListEditor } from '../../../_components/TextListEditor';
+import { Spinner } from '../../../_components/ui/Spinner';
 import { useUser } from '../../../_components/user-context';
 
 /**
@@ -75,7 +76,7 @@ export default function RecipeDetailPage(): JSX.Element {
   );
 
   if (state.status === 'loading') {
-    return <p className="state-note">Loading recipe…</p>;
+    return <Spinner label="Loading recipe…" />;
   }
 
   if (state.status === 'notfound') {

@@ -9,6 +9,7 @@ import type { RecipeSummary } from '@application/types';
 import { NewRecipeSheet } from '../../_components/NewRecipeSheet';
 import { RecipeCard } from '../../_components/RecipeCard';
 import { Button } from '../../_components/ui/Button';
+import { Spinner } from '../../_components/ui/Spinner';
 import { useUser } from '../../_components/user-context';
 
 /**
@@ -64,7 +65,7 @@ export default function RecipesPage(): JSX.Element {
         <Button onClick={() => setChoosing(true)}>+ New Recipe</Button>
       </header>
 
-      {state.status === 'loading' && <p className="state-note">Loading your recipes…</p>}
+      {state.status === 'loading' && <Spinner label="Loading your recipes…" />}
 
       {state.status === 'error' && (
         <p className="state-note state-note-error">

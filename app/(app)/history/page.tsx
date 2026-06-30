@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import type { CookSession } from '@application/types';
 
 import { CookSessionCard } from '../../_components/CookSessionCard';
+import { Spinner } from '../../_components/ui/Spinner';
 import { useUser } from '../../_components/user-context';
 
 /**
@@ -88,7 +89,7 @@ export default function HistoryPage(): JSX.Element {
         <h1 className="history-title">Cook History</h1>
       </header>
 
-      {state.status === 'loading' && <p className="state-note">Loading your cook history…</p>}
+      {state.status === 'loading' && <Spinner label="Loading your cook history…" />}
 
       {state.status === 'error' && (
         <p className="state-note state-note-error">
