@@ -9,7 +9,8 @@ import { Button } from './ui/Button';
 
 /**
  * Editable Ingredients section (idea.md §2): each ingredient has a quantity,
- * unit, and name, with add / edit / remove. The whole list is saved at once via
+ * unit, and name, with add / edit / remove / reorder (up/down buttons, matching
+ * Steps — mobile-friendly, no drag). The whole list is saved at once via
  * `onSave` (the API replaces the recipe's ingredients), so the array order is
  * the stored order.
  */
@@ -63,6 +64,17 @@ export function IngredientsEditor({
     mutate(rows.map((row) => (row.key === key ? { ...row, [field]: value } : row)));
   };
 
+  const move = (index: number, delta: number): void => {
+    const target = index + delta;
+    if (target < 0 || target >= rows.length) {
+      return;
+    }
+    const next = [...rows];
+    const [moved] = next.splice(index, 1);
+    next.splice(target, 0, moved as Draft);
+    mutate(next);
+  };
+
   const save = async (): Promise<void> => {
     setStatus('saving');
     const items: IngredientInput[] = rows
@@ -91,7 +103,7 @@ export function IngredientsEditor({
         <p className="state-note">No ingredients yet.</p>
       ) : (
         <ul className="editor-list">
-          {rows.map((row) => (
+          {rows.map((row, index) => (
             <li key={row.key} className="ingredient-row">
               <input
                 className="input input-qty"
@@ -114,6 +126,28 @@ export function IngredientsEditor({
                 aria-label="Ingredient name"
                 onChange={(event) => editRow(row.key, 'name', event.target.value)}
               />
+              <div className="reorder-buttons">
+                <button
+                  type="button"
+                  className="icon-button"
+                  aria-label="Move up"
+                  title="Move up"
+                  disabled={index === 0}
+                  onClick={() => move(index, -1)}
+                >
+                  ↑
+                </button>
+                <button
+                  type="button"
+                  className="icon-button"
+                  aria-label="Move down"
+                  title="Move down"
+                  disabled={index === rows.length - 1}
+                  onClick={() => move(index, 1)}
+                >
+                  ↓
+                </button>
+              </div>
               <button
                 type="button"
                 className="icon-button"

@@ -131,6 +131,7 @@ export default function RecipeDetailPage(): JSX.Element {
         onSave={(items) => saveSection('prep', items)}
         addLabel="+ Add prep task"
         placeholder="e.g. Chop the onions"
+        reorderable
         emptyNote="No prep tasks yet."
       />
 
