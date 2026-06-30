@@ -8,9 +8,11 @@
 import { ApplyRecipeSuggestionUseCase } from '@application/use-cases/ApplyRecipeSuggestionUseCase';
 import { CreateRecipeFromTextUseCase } from '@application/use-cases/CreateRecipeFromTextUseCase';
 import { CreateRecipeUseCase } from '@application/use-cases/CreateRecipeUseCase';
+import { DeleteCookSessionUseCase } from '@application/use-cases/DeleteCookSessionUseCase';
 import { DeleteRecipeUseCase } from '@application/use-cases/DeleteRecipeUseCase';
 import { EnsureUserUseCase } from '@application/use-cases/EnsureUserUseCase';
 import { GetRecipeUseCase } from '@application/use-cases/GetRecipeUseCase';
+import { ListCookSessionsUseCase } from '@application/use-cases/ListCookSessionsUseCase';
 import { ListRecipesUseCase } from '@application/use-cases/ListRecipesUseCase';
 import { LogCookSessionUseCase } from '@application/use-cases/LogCookSessionUseCase';
 import { ParseRecipeUseCase } from '@application/use-cases/ParseRecipeUseCase';
@@ -34,6 +36,8 @@ let saveRecipeSectionsUseCase: SaveRecipeSectionsUseCase | null = null;
 let updateRecipeUseCase: UpdateRecipeUseCase | null = null;
 let deleteRecipeUseCase: DeleteRecipeUseCase | null = null;
 let logCookSessionUseCase: LogCookSessionUseCase | null = null;
+let listCookSessionsUseCase: ListCookSessionsUseCase | null = null;
+let deleteCookSessionUseCase: DeleteCookSessionUseCase | null = null;
 let suggestRecipeChangesUseCase: SuggestRecipeChangesUseCase | null = null;
 let applyRecipeSuggestionUseCase: ApplyRecipeSuggestionUseCase | null = null;
 
@@ -154,6 +158,22 @@ export function getLogCookSessionUseCase(): LogCookSessionUseCase {
     logCookSessionUseCase = new LogCookSessionUseCase(getCookSessionRepository());
   }
   return logCookSessionUseCase;
+}
+
+/** Lazily build and cache the "Cook History" list use case (idea.md §4). */
+export function getListCookSessionsUseCase(): ListCookSessionsUseCase {
+  if (!listCookSessionsUseCase) {
+    listCookSessionsUseCase = new ListCookSessionsUseCase(getCookSessionRepository());
+  }
+  return listCookSessionsUseCase;
+}
+
+/** Lazily build and cache the delete-cook-session use case (idea.md §4). */
+export function getDeleteCookSessionUseCase(): DeleteCookSessionUseCase {
+  if (!deleteCookSessionUseCase) {
+    deleteCookSessionUseCase = new DeleteCookSessionUseCase(getCookSessionRepository());
+  }
+  return deleteCookSessionUseCase;
 }
 
 /** Lazily build and cache the post-cook notes → suggested changes use case (idea.md §3). */

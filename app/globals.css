@@ -455,6 +455,117 @@ body {
   gap: 1.1rem;
 }
 
+/* Cook History list page -------------------------------------------------- */
+
+.history-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.history-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.history-title {
+  margin: 0;
+  font-size: 1.6rem;
+}
+
+.session-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.session-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 0.95rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+}
+
+.session-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.session-card-headings {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.session-card-name {
+  margin: 0;
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.session-card-meta {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.session-card-confirm {
+  display: flex;
+  gap: 0.4rem;
+  flex: none;
+}
+
+.session-card-delete {
+  flex: none;
+  color: var(--error);
+}
+
+.session-card-summary {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.session-card-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.session-card-section-title {
+  margin: 0;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.session-card-deviations {
+  margin: 0;
+  padding-left: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-size: 0.92rem;
+}
+
+.session-card-notes {
+  margin: 0;
+  font-size: 0.92rem;
+  white-space: pre-wrap;
+}
+
 .recipes-head {
   display: flex;
   align-items: center;

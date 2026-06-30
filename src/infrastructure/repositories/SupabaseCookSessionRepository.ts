@@ -38,4 +38,13 @@ export class SupabaseCookSessionRepository implements CookSessionRepository {
     });
     return toCookSession(row);
   }
+
+  async list(username: string): Promise<CookSession[]> {
+    const rows = await cookSessions.listCookSessions(getServiceRoleClient(), username);
+    return rows.map(toCookSession);
+  }
+
+  async delete(username: string, sessionId: string): Promise<void> {
+    await cookSessions.deleteCookSession(getServiceRoleClient(), username, sessionId);
+  }
 }
