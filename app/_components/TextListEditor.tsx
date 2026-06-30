@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 
 import { SaveControls, type SaveStatus } from './SaveControls';
 import { Button } from './ui/Button';
@@ -10,7 +10,49 @@ import { Button } from './ui/Button';
  * (idea.md §2). Supports add / edit / remove, and — for Steps — reorder via
  * up/down buttons (mobile-friendly, no drag) and a sequential number. The whole
  * list is saved at once via `onSave`, so the array order is the stored order.
+ *
+ * Each item is edited in an auto-growing textarea so that long text wraps and
+ * the field grows in vertical length instead of clipping the overflow.
  */
+
+/**
+ * A textarea that grows to fit its content (no inner scrollbar), so long step
+ * or prep text stays fully visible instead of being hidden on overflow.
+ */
+function AutoGrowTextarea({
+  value,
+  onChange,
+  placeholder,
+  ariaLabel,
+}: {
+  value: string;
+  onChange: (value: string) => void;
+  placeholder: string;
+  ariaLabel: string;
+}): JSX.Element {
+  const ref = useRef<HTMLTextAreaElement>(null);
+
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el) {
+      return;
+    }
+    el.style.height = 'auto';
+    el.style.height = `${el.scrollHeight}px`;
+  }, [value]);
+
+  return (
+    <textarea
+      ref={ref}
+      className="input input-grow"
+      rows={1}
+      value={value}
+      placeholder={placeholder}
+      aria-label={ariaLabel}
+      onChange={(event) => onChange(event.target.value)}
+    />
+  );
+}
 
 interface Draft {
   key: string;
@@ -107,12 +149,11 @@ export function TextListEditor({
           {rows.map((row, index) => (
             <li key={row.key} className="text-row">
               {ordered && <span className="text-row-number">{index + 1}</span>}
-              <input
-                className="input"
+              <AutoGrowTextarea
                 value={row.text}
                 placeholder={placeholder}
-                aria-label={`${title} item ${index + 1}`}
-                onChange={(event) => editRow(row.key, event.target.value)}
+                ariaLabel={`${title} item ${index + 1}`}
+                onChange={(value) => editRow(row.key, value)}
               />
               {reorderable && (
                 <div className="reorder-buttons">

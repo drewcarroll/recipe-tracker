@@ -813,6 +813,31 @@ body {
   gap: 0.4rem;
 }
 
+/* The text rows use an auto-growing textarea, so align controls to the top to
+   stay level with the first line as the field grows. */
+.text-row {
+  align-items: flex-start;
+}
+
+/* Auto-growing textarea for Prep / Steps: wraps long text and grows vertically
+   instead of clipping it. JS keeps the height matched to the content. */
+.input-grow {
+  display: block;
+  resize: none;
+  overflow: hidden;
+  line-height: 1.5;
+  font-family: inherit;
+}
+
+.text-row .text-row-number {
+  padding-top: 0.7rem;
+}
+
+.text-row .reorder-buttons,
+.text-row > .icon-button {
+  margin-top: 0.4rem;
+}
+
 .input-qty {
   flex: none;
   width: 3.5rem;
