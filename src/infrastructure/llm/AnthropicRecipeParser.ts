@@ -54,7 +54,9 @@ function sanitizeStructuredRecipe(raw: unknown): unknown {
  * Runs server-side only; the API key never reaches the browser (idea.md §6).
  */
 
-const MODEL = 'claude-opus-4-8';
+// Recipe parsing is bounded structured extraction, so the fastest/cheapest
+// model that supports structured outputs is the right fit.
+const MODEL = 'claude-haiku-4-5';
 
 const SYSTEM_PROMPT = [
   'You convert a pasted recipe into a structured recipe.',

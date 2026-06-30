@@ -20,7 +20,9 @@ import { getAnthropicConfig } from '@infrastructure/config/env';
  * Runs server-side only; the API key never reaches the browser (idea.md §6).
  */
 
-const MODEL = 'claude-opus-4-8';
+// Turning notes into discrete structured suggestions is a bounded extraction
+// task — use the fastest/cheapest model that supports structured outputs.
+const MODEL = 'claude-haiku-4-5';
 
 const SYSTEM_PROMPT = [
   'You help improve a saved recipe based on the cook\'s free-text "notes for next time",',
