@@ -116,7 +116,7 @@ export function IngredientsEditor({
               <input
                 className="input input-unit"
                 value={row.unit}
-                placeholder="cup"
+                placeholder="unit"
                 aria-label="Unit"
                 onChange={(event) => editRow(row.key, 'unit', event.target.value)}
               />

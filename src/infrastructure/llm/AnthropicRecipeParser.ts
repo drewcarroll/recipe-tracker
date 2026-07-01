@@ -59,13 +59,37 @@ function sanitizeStructuredRecipe(raw: unknown): unknown {
 const MODEL = 'claude-haiku-4-5';
 
 const SYSTEM_PROMPT = [
-  'You convert a pasted recipe into a structured recipe.',
-  'Extract the dish name, the ingredients (each with a quantity, unit, and name —',
-  'use an empty string for quantity or unit when the text does not give one), any',
-  'prep tasks done before cooking, and the ordered cooking steps.',
-  'Use the recipe exactly as written: do not invent ingredients or steps, and do',
-  'not add commentary. If the text is not a recipe, salvage whatever structure you can.',
-].join(' ');
+  'You convert a pasted recipe into a structured recipe with four parts: the dish',
+  'name, the ingredients, the prep tasks, and the ordered cooking steps.',
+  '',
+  'Ingredients: each has a quantity, unit, and name. Use an empty string for the',
+  'quantity or unit when the text does not give one — do NOT invent a unit. Many',
+  'ingredients have no unit at all (e.g. "2 eggs", "1 onion", "a pinch of salt"):',
+  'leave unit empty for those.',
+  '',
+  'Do NOT translate the recipe word-for-word, step-by-step. Reorganize it so that',
+  'everything that can be done ahead of time lands in Prep, and Cook contains only',
+  'the actions performed at the stove/oven with ingredients already ready to go.',
+  '',
+  'Use this test for every action: assuming the cook has already done everything',
+  'listed in Prep, can this be done in 5 seconds or less? If NO, it belongs in Prep.',
+  'Prep therefore includes things the recipe assumes but does not spell out:',
+  '- Knife work implied by an ingredient: "minced garlic" -> "Mince the garlic";',
+  '  "diced onion" -> "Dice the onion"; "chopped parsley" -> "Chop the parsley".',
+  '  Assume ingredients do not come pre-cut unless the text clearly says so.',
+  '- Measuring out ingredients, opening cans/packages, draining, rinsing.',
+  '- Setting aside or combining ingredients that are used together later.',
+  '- Bringing things to room temperature, preheating is a cook/prep judgement call',
+  '  (put preheating the oven in Prep).',
+  '',
+  'Cook steps should then read as smooth actions on ready-to-use ingredients, e.g.',
+  '"Add the minced garlic and cook until fragrant" rather than "Mince the garlic',
+  'and add it".',
+  '',
+  'Do not invent ingredients or cooking techniques that are not implied by the',
+  'recipe, and do not add commentary. If the text is not a recipe, salvage whatever',
+  'structure you can.',
+].join('\n');
 
 /**
  * JSON schema mirroring {@link structuredRecipeSchema}, written to the
