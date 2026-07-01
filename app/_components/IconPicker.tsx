@@ -25,7 +25,7 @@ export function IconPicker({
             title={icon.label}
             onClick={() => onChange(icon.key)}
           >
-            <span aria-hidden="true">{icon.glyph}</span>
+            <icon.Icon size={24} strokeWidth={1.9} aria-hidden="true" />
           </button>
         );
       })}

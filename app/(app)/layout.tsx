@@ -1,5 +1,6 @@
 'use client';
 
+import { ChefHat } from 'lucide-react';
 import type { ReactNode } from 'react';
 
 import { BottomNav } from '../_components/BottomNav';
@@ -25,7 +26,12 @@ export default function AppLayout({ children }: { children: ReactNode }): JSX.El
   return (
     <div className="app-shell">
       <header className="app-header">
-        <span className="app-brand">🍳 Recipe Tracker</span>
+        <span className="app-brand">
+          <span className="app-brand-mark" aria-hidden="true">
+            <ChefHat size={19} strokeWidth={2} />
+          </span>
+          Recipe Tracker
+        </span>
         <Button variant="ghost" onClick={signOut}>
           Sign out
         </Button>

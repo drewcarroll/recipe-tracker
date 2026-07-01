@@ -1,3 +1,4 @@
+import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
 import { CreateRecipeForm } from '../../../../_components/CreateRecipeForm';
@@ -15,7 +16,7 @@ export default function NewRecipePage({ params }: { params: { mode: string } }):
     <section className="create-page">
       <header className="create-page-head">
         <Link className="button button-ghost" href="/recipes">
-          ← Recipes
+          <ArrowLeft size={17} strokeWidth={2.2} /> Recipes
         </Link>
         <h1 className="recipes-title">{isAi ? 'Create using AI' : 'New Recipe'}</h1>
       </header>

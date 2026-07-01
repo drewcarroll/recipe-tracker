@@ -1,5 +1,6 @@
 'use client';
 
+import { X } from 'lucide-react';
 import { useState } from 'react';
 
 import { Button } from '../ui/Button';
@@ -52,7 +53,7 @@ export function DeviationRecorder({
                 onClick={() => onRemove(index)}
                 aria-label={`Remove "${deviation}"`}
               >
-                ✕
+                <X size={16} strokeWidth={2.4} />
               </button>
             </li>
           ))}

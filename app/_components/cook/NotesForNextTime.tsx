@@ -1,5 +1,6 @@
 'use client';
 
+import { Check } from 'lucide-react';
 import { useState } from 'react';
 
 import type { RecipeDetail, RecipeSuggestion } from '@application/types';
@@ -207,7 +208,7 @@ export function NotesForNextTime({
 
               {item.decision === 'approved' && (
                 <span className="cook-suggestion-status cook-suggestion-status-approved">
-                  ✓ Applied
+                  <Check size={15} strokeWidth={3} /> Applied
                 </span>
               )}
               {item.decision === 'rejected' && (

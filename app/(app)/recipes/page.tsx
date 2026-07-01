@@ -1,5 +1,6 @@
 'use client';
 
+import { UtensilsCrossed } from 'lucide-react';
 import type { Route } from 'next';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -76,9 +77,9 @@ export default function RecipesPage(): JSX.Element {
       {state.status === 'ready' &&
         (state.recipes.length === 0 ? (
           <div className="recipes-empty">
-            <p className="recipes-empty-emoji" aria-hidden="true">
-              🍽️
-            </p>
+            <span className="recipes-empty-emoji" aria-hidden="true">
+              <UtensilsCrossed size={30} strokeWidth={1.8} />
+            </span>
             <p className="state-note">No recipes yet. Add your first one to get cooking!</p>
           </div>
         ) : (

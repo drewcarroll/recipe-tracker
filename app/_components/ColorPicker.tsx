@@ -1,5 +1,7 @@
 'use client';
 
+import { Check } from 'lucide-react';
+
 import { PASTELS } from '../_design/palette';
 
 /** Selectable pastel swatches for choosing a recipe's color (idea.md §2). */
@@ -26,7 +28,7 @@ export function ColorPicker({
             title={pastel.label}
             onClick={() => onChange(pastel.key)}
           >
-            {selected ? '✓' : ''}
+            {selected ? <Check size={18} strokeWidth={3} /> : ''}
           </button>
         );
       })}

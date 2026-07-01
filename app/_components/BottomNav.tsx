@@ -1,5 +1,6 @@
 'use client';
 
+import { BookOpen, ChefHat, Clock, type LucideIcon } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { Route } from 'next';
@@ -13,13 +14,13 @@ import type { Route } from 'next';
 interface Tab {
   href: Route;
   label: string;
-  icon: string;
+  Icon: LucideIcon;
 }
 
 const TABS: readonly Tab[] = [
-  { href: '/recipes', label: 'Recipes', icon: '📖' },
-  { href: '/', label: 'Cook', icon: '🍳' },
-  { href: '/history', label: 'History', icon: '🕑' },
+  { href: '/recipes', label: 'Recipes', Icon: BookOpen },
+  { href: '/', label: 'Cook', Icon: ChefHat },
+  { href: '/history', label: 'History', Icon: Clock },
 ];
 
 function isActive(pathname: string, href: Route): boolean {
@@ -53,7 +54,7 @@ export function BottomNav(): JSX.Element {
             aria-current={active ? 'page' : undefined}
           >
             <span className="nav-icon" aria-hidden="true">
-              {tab.icon}
+              <tab.Icon size={center ? 26 : 23} strokeWidth={2} />
             </span>
             <span className="nav-label">{tab.label}</span>
           </Link>

@@ -1,5 +1,6 @@
 'use client';
 
+import { ChefHat } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState, type FormEvent } from 'react';
 
@@ -47,7 +48,10 @@ export default function LoginPage(): JSX.Element {
   return (
     <main className="screen">
       <Card as="form" onSubmit={handleSubmit}>
-        <h1 className="title">🍳 Recipe Tracker</h1>
+        <span className="login-mark" aria-hidden="true">
+          <ChefHat size={30} strokeWidth={1.9} />
+        </span>
+        <h1 className="title">Recipe Tracker</h1>
         <p className="subtitle">Enter a username to get cooking. We&rsquo;ll create it if it&rsquo;s new.</p>
 
         <label className="field">

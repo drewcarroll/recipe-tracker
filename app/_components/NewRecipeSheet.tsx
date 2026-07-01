@@ -1,5 +1,6 @@
 'use client';
 
+import { type LucideIcon, Pencil, Sparkles } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import type { Route } from 'next';
 import { useEffect } from 'react';
@@ -12,7 +13,7 @@ import { useEffect } from 'react';
 
 interface CreateOption {
   mode: 'scratch' | 'ai';
-  icon: string;
+  Icon: LucideIcon;
   title: string;
   description: string;
 }
@@ -20,13 +21,13 @@ interface CreateOption {
 const OPTIONS: readonly CreateOption[] = [
   {
     mode: 'scratch',
-    icon: '✏️',
+    Icon: Pencil,
     title: 'Create from Scratch',
     description: 'Start with a blank recipe and fill it in yourself.',
   },
   {
     mode: 'ai',
-    icon: '✨',
+    Icon: Sparkles,
     title: 'Create using AI',
     description: 'Paste in a recipe and let Claude structure it for you.',
   },
@@ -78,7 +79,7 @@ export function NewRecipeSheet({ onClose }: { onClose: () => void }): JSX.Elemen
               onClick={() => choose(option.mode)}
             >
               <span className="sheet-option-icon" aria-hidden="true">
-                {option.icon}
+                <option.Icon size={24} strokeWidth={2} />
               </span>
               <span className="sheet-option-body">
                 <span className="sheet-option-title">{option.title}</span>

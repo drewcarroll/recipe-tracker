@@ -1,5 +1,5 @@
-import { getRecipeIconGlyph } from '../_design/icons';
 import { getPastel } from '../_design/palette';
+import { RecipeIcon } from './RecipeIcon';
 
 /**
  * A recipe summary card (idea.md §2): colored icon tile + name + "Times cooked".
@@ -28,7 +28,7 @@ export function RecipeCard({
         style={{ background: pastel.value, color: pastel.ink }}
         aria-hidden="true"
       >
-        {getRecipeIconGlyph(icon)}
+        <RecipeIcon icon={icon} size={28} />
       </span>
       <span className="recipe-card-body">
         <span className="recipe-card-name">{name}</span>

@@ -1,5 +1,6 @@
 'use client';
 
+import { Timer } from 'lucide-react';
 import { useState } from 'react';
 
 import type { CookSession } from '@application/types';
@@ -62,7 +63,9 @@ export function CookSessionCard({
           <p className="session-card-meta">
             <time dateTime={session.cookedAt}>{formatCookedAt(session.cookedAt)}</time>
             <span aria-hidden="true"> · </span>
-            <span>⏱ {formatDuration(session.durationSeconds)}</span>
+            <span className="session-card-duration">
+              <Timer size={14} strokeWidth={2.2} /> {formatDuration(session.durationSeconds)}
+            </span>
           </p>
         </div>
 

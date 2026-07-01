@@ -1,11 +1,12 @@
 'use client';
 
+import { ArrowLeft, ArrowRight, Check, PartyPopper, Timer, X } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import type { RecipeDetail } from '@application/types';
 
-import { getRecipeIconGlyph } from '../../_design/icons';
 import { getPastel } from '../../_design/palette';
+import { RecipeIcon } from '../RecipeIcon';
 import { Button } from '../ui/Button';
 import { DeviationRecorder } from './DeviationRecorder';
 import { NotesForNextTime } from './NotesForNextTime';
@@ -178,7 +179,7 @@ export function GuidedCook({
       <section className="cook-flow">
         <div className="cook-congrats">
           <div className="cook-congrats-emoji" aria-hidden="true">
-            🎉
+            <PartyPopper size={40} strokeWidth={1.9} />
           </div>
           <h1 className="cook-congrats-title">Nice work!</h1>
           <p className="cook-congrats-sub">
@@ -231,10 +232,10 @@ export function GuidedCook({
     <section className="cook-flow">
       <header className="cook-flow-head">
         <Button variant="ghost" onClick={onExit}>
-          ✕ Quit
+          <X size={18} strokeWidth={2.2} /> Quit
         </Button>
         <span className="cook-timer" aria-label="Elapsed cook time" role="timer">
-          ⏱ {formatDuration(displaySeconds)}
+          <Timer size={18} strokeWidth={2.2} /> {formatDuration(displaySeconds)}
         </span>
       </header>
 
@@ -244,7 +245,7 @@ export function GuidedCook({
           style={{ background: pastel.value, color: pastel.ink }}
           aria-hidden="true"
         >
-          {getRecipeIconGlyph(recipe.icon)}
+          <RecipeIcon icon={recipe.icon} size={24} />
         </span>
         <span className="cook-recipe-name">{recipe.name}</span>
       </div>
@@ -291,7 +292,7 @@ export function GuidedCook({
           </div>
           <div className="cook-actions">
             <Button block onClick={() => setStage('prep')}>
-              Next →
+              Next <ArrowRight size={18} strokeWidth={2.2} />
             </Button>
           </div>
         </>
@@ -319,7 +320,7 @@ export function GuidedCook({
                         onClick={() => togglePrep(item.id)}
                       >
                         <span className="cook-check-box" aria-hidden="true">
-                          {done ? '✓' : ''}
+                          {done ? <Check size={16} strokeWidth={3} /> : ''}
                         </span>
                         <span className="cook-check-text">{item.text}</span>
                       </button>
@@ -331,7 +332,7 @@ export function GuidedCook({
           </div>
           <div className="cook-actions">
             <Button variant="secondary" onClick={() => setStage('ingredients')}>
-              ← Back
+              <ArrowLeft size={18} strokeWidth={2.2} /> Back
             </Button>
             <Button
               block
@@ -340,7 +341,7 @@ export function GuidedCook({
                 setStage('steps');
               }}
             >
-              Start cooking →
+              Start cooking <ArrowRight size={18} strokeWidth={2.2} />
             </Button>
           </div>
         </>
@@ -355,10 +356,10 @@ export function GuidedCook({
             </div>
             <div className="cook-actions">
               <Button variant="secondary" onClick={() => setStage('prep')}>
-                ← Back
+                <ArrowLeft size={18} strokeWidth={2.2} /> Back
               </Button>
               <Button block onClick={finish}>
-                Finish 🎉
+                Finish <PartyPopper size={18} strokeWidth={2.2} />
               </Button>
             </div>
           </>
@@ -386,15 +387,15 @@ export function GuidedCook({
                 variant="secondary"
                 onClick={() => (stepIndex === 0 ? setStage('prep') : setStepIndex((i) => i - 1))}
               >
-                ← Back
+                <ArrowLeft size={18} strokeWidth={2.2} /> Back
               </Button>
               {stepIndex === steps.length - 1 ? (
                 <Button block onClick={finish}>
-                  Finish 🎉
+                  Finish <PartyPopper size={18} strokeWidth={2.2} />
                 </Button>
               ) : (
                 <Button block onClick={() => setStepIndex((i) => i + 1)}>
-                  Next →
+                  Next <ArrowRight size={18} strokeWidth={2.2} />
                 </Button>
               )}
             </div>

@@ -1,5 +1,6 @@
 'use client';
 
+import { ChefHat, UtensilsCrossed } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import type { RecipeDetail, RecipeSummary } from '@application/types';
@@ -129,9 +130,9 @@ export function CookExperience(): JSX.Element {
         {list.status === 'ready' &&
           (list.recipes.length === 0 ? (
             <div className="recipes-empty">
-              <p className="recipes-empty-emoji" aria-hidden="true">
-                🍽️
-              </p>
+              <span className="recipes-empty-emoji" aria-hidden="true">
+                <UtensilsCrossed size={30} strokeWidth={1.8} />
+              </span>
               <p className="state-note">Add a recipe first, then come back to cook it!</p>
             </div>
           ) : (
@@ -162,6 +163,7 @@ export function CookExperience(): JSX.Element {
       <h1 className="tab-title">Let&rsquo;s Cook</h1>
       <p className="tab-subtitle">Pick a recipe and cook it step by step.</p>
       <button className="cook-button" type="button" onClick={() => setPhase({ status: 'picking' })}>
+        <ChefHat size={38} strokeWidth={1.8} aria-hidden="true" />
         COOK
       </button>
     </section>

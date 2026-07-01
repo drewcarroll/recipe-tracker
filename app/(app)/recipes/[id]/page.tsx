@@ -1,5 +1,6 @@
 'use client';
 
+import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
@@ -109,7 +110,7 @@ export default function RecipeDetailPage(): JSX.Element {
     <div className="recipe-detail">
       <header className="recipe-detail-head">
         <Link className="button button-ghost recipe-detail-back" href="/recipes">
-          ← Recipes
+          <ArrowLeft size={17} strokeWidth={2.2} /> Recipes
         </Link>
         <RecipeBasicsEditor
           recipeId={recipe.id}

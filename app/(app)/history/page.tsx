@@ -1,5 +1,6 @@
 'use client';
 
+import { History } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import type { CookSession } from '@application/types';
@@ -100,9 +101,9 @@ export default function HistoryPage(): JSX.Element {
       {state.status === 'ready' &&
         (state.sessions.length === 0 ? (
           <div className="recipes-empty">
-            <p className="recipes-empty-emoji" aria-hidden="true">
-              🕑
-            </p>
+            <span className="recipes-empty-emoji" aria-hidden="true">
+              <History size={30} strokeWidth={1.8} />
+            </span>
             <p className="state-note">No cooks yet. Finish a guided cook and it’ll show up here.</p>
           </div>
         ) : (

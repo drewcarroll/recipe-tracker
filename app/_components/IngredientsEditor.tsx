@@ -1,5 +1,6 @@
 'use client';
 
+import { ChevronDown, ChevronUp, X } from 'lucide-react';
 import { useState } from 'react';
 
 import type { Ingredient, IngredientInput } from '@application/types';
@@ -135,7 +136,7 @@ export function IngredientsEditor({
                   disabled={index === 0}
                   onClick={() => move(index, -1)}
                 >
-                  ↑
+                  <ChevronUp size={16} strokeWidth={2.4} />
                 </button>
                 <button
                   type="button"
@@ -145,7 +146,7 @@ export function IngredientsEditor({
                   disabled={index === rows.length - 1}
                   onClick={() => move(index, 1)}
                 >
-                  ↓
+                  <ChevronDown size={16} strokeWidth={2.4} />
                 </button>
               </div>
               <button
@@ -155,7 +156,7 @@ export function IngredientsEditor({
                 title="Remove"
                 onClick={() => removeRow(row.key)}
               >
-                ✕
+                <X size={16} strokeWidth={2.4} />
               </button>
             </li>
           ))}

@@ -1,5 +1,6 @@
 'use client';
 
+import { ChevronDown, ChevronUp, X } from 'lucide-react';
 import { useLayoutEffect, useRef, useState } from 'react';
 
 import { SaveControls, type SaveStatus } from './SaveControls';
@@ -165,7 +166,7 @@ export function TextListEditor({
                     disabled={index === 0}
                     onClick={() => move(index, -1)}
                   >
-                    ↑
+                    <ChevronUp size={16} strokeWidth={2.4} />
                   </button>
                   <button
                     type="button"
@@ -175,7 +176,7 @@ export function TextListEditor({
                     disabled={index === rows.length - 1}
                     onClick={() => move(index, 1)}
                   >
-                    ↓
+                    <ChevronDown size={16} strokeWidth={2.4} />
                   </button>
                 </div>
               )}
@@ -186,7 +187,7 @@ export function TextListEditor({
                 title="Remove"
                 onClick={() => removeRow(row.key)}
               >
-                ✕
+                <X size={16} strokeWidth={2.4} />
               </button>
             </li>
           ))}

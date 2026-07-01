@@ -1,12 +1,34 @@
 :root {
-  --bg: #fdf6f0;
+  /* Type */
+  --font-display: var(--font-display, 'Fraunces'), Georgia, 'Times New Roman', serif;
+  --font-body: var(--font-body, 'Mulish'), system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* Warm pastel paper — cooler and cleaner than a flat cream, so it reads
+     modern rather than "kraft paper". */
+  --bg: #f7f4f1;
+  --bg-tint-a: #fdeef0; /* faint rose, top-left wash */
+  --bg-tint-b: #eef2fb; /* faint sky, bottom-right wash */
   --card: #ffffff;
-  --ink: #2b2b2b;
-  --muted: #7a7a7a;
-  --accent: #f6a5a5;
-  --accent-ink: #5b1d1d;
-  --border: #efe3da;
+  --ink: #2e2a27;
+  --muted: #928a82;
+  --accent: #f2a3ad; /* pastel rose */
+  --accent-2: #f7c9a4; /* soft peach, for gradients */
+  --accent-strong: #ea8092;
+  --accent-ink: #7c2d40; /* deep rose — text on/of the accent */
+  --border: #ece4dc;
+  --border-strong: #e0d5ca;
   --error: #c0392b;
+
+  /* Elevation — soft, layered, low-contrast so cards float gently. */
+  --shadow-sm: 0 1px 2px rgba(60, 40, 35, 0.04), 0 3px 10px rgba(60, 40, 35, 0.05);
+  --shadow-md: 0 6px 24px rgba(60, 40, 35, 0.08);
+  --shadow-lg: 0 18px 40px rgba(60, 40, 35, 0.12);
+  --ring: 0 0 0 3px rgba(242, 163, 173, 0.35);
+
+  /* Radii */
+  --radius-sm: 0.7rem;
+  --radius: 1rem;
+  --radius-lg: 1.35rem;
 
   /* Fixed pastel palette tokens (idea.md §2). Mirrors app/_design/palette.ts. */
   --pastel-blush: #fcdcdc;
@@ -30,15 +52,47 @@ body {
 }
 
 body {
-  background: var(--bg);
+  min-height: 100dvh;
+  background-color: var(--bg);
+  /* Barely-there pastel washes in opposite corners for depth. */
+  background-image:
+    radial-gradient(120% 90% at 0% 0%, var(--bg-tint-a) 0%, transparent 42%),
+    radial-gradient(120% 90% at 100% 100%, var(--bg-tint-b) 0%, transparent 45%);
+  background-attachment: fixed;
   color: var(--ink);
-  font-family:
-    system-ui,
-    -apple-system,
-    'Segoe UI',
-    Roboto,
-    sans-serif;
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.55;
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Headings & display numerals lean on the serif for a cookbook feel. */
+h1,
+h2,
+h3,
+.title,
+.tab-title,
+.recipes-title,
+.history-title,
+.sheet-title,
+.editor-section-title,
+.cook-stage-title,
+.cook-congrats-title,
+.cook-recipe-name,
+.recipe-card-name,
+.app-brand,
+.cook-congrats-time-value {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* Lucide icons inherit text color and align to the text baseline nicely. */
+svg {
+  display: inline-block;
+  vertical-align: middle;
+  flex: none;
 }
 
 /* Mobile-first centered screen (idea.md §5). */
@@ -55,9 +109,9 @@ body {
   max-width: 24rem;
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: 1.25rem;
-  padding: 2rem 1.5rem;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+  border-radius: var(--radius-lg);
+  padding: 2.25rem 1.75rem;
+  box-shadow: var(--shadow-lg);
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -65,8 +119,8 @@ body {
 
 .title {
   margin: 0;
-  font-size: 1.6rem;
-  line-height: 1.2;
+  font-size: 1.9rem;
+  line-height: 1.1;
 }
 
 .subtitle {
@@ -89,12 +143,20 @@ body {
 
 .input {
   width: 100%;
-  padding: 0.75rem 0.9rem;
+  padding: 0.72rem 0.9rem;
   font-size: 1rem;
-  border: 1px solid var(--border);
-  border-radius: 0.75rem;
+  font-family: inherit;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
   background: #fff;
   color: var(--ink);
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.input::placeholder {
+  color: #bcb3aa;
 }
 
 .textarea {
@@ -107,7 +169,7 @@ body {
 .input:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(246, 165, 165, 0.3);
+  box-shadow: var(--ring);
 }
 
 .input[aria-invalid='true'] {
@@ -118,30 +180,35 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.4rem;
-  padding: 0.8rem 1.1rem;
+  gap: 0.45rem;
+  padding: 0.8rem 1.2rem;
+  font-family: inherit;
   font-size: 1rem;
   font-weight: 700;
   color: var(--accent-ink);
-  background: var(--accent);
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 130%);
   border: none;
-  border-radius: 0.75rem;
+  border-radius: var(--radius-sm);
   cursor: pointer;
+  box-shadow: 0 6px 16px rgba(234, 128, 146, 0.32);
   transition:
     filter 0.15s ease,
+    box-shadow 0.15s ease,
     transform 0.1s ease;
 }
 
 .button:hover:not(:disabled) {
-  filter: brightness(0.97);
+  filter: brightness(1.03);
+  box-shadow: 0 10px 22px rgba(234, 128, 146, 0.4);
 }
 
 .button:active:not(:disabled) {
-  transform: scale(0.98);
+  transform: translateY(1px) scale(0.99);
 }
 
 .button:disabled {
-  opacity: 0.6;
+  opacity: 0.55;
+  box-shadow: none;
   cursor: not-allowed;
 }
 
@@ -151,9 +218,16 @@ body {
 }
 
 .button-secondary {
-  background: transparent;
-  color: var(--muted);
-  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--ink);
+  border: 1px solid var(--border-strong);
+  box-shadow: var(--shadow-sm);
+}
+
+.button-secondary:hover:not(:disabled) {
+  border-color: var(--accent);
+  box-shadow: var(--shadow-sm);
+  filter: none;
 }
 
 .button-ghost {
@@ -161,6 +235,13 @@ body {
   color: var(--muted);
   font-weight: 600;
   padding: 0.4rem 0.6rem;
+  box-shadow: none;
+}
+
+.button-ghost:hover:not(:disabled) {
+  color: var(--accent-ink);
+  box-shadow: none;
+  filter: none;
 }
 
 .error {
@@ -187,13 +268,30 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.85rem 1.1rem;
-  background: var(--bg);
+  padding: 0.8rem 1.1rem;
+  background: rgba(247, 244, 241, 0.8);
+  backdrop-filter: saturate(1.2) blur(10px);
   border-bottom: 1px solid var(--border);
 }
 
 .app-brand {
-  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.app-brand-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.65rem;
+  color: var(--accent-ink);
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 130%);
+  box-shadow: 0 4px 10px rgba(234, 128, 146, 0.35);
 }
 
 .app-main {
@@ -227,32 +325,35 @@ body {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   align-items: end;
-  background: var(--card);
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: saturate(1.3) blur(12px);
   border-top: 1px solid var(--border);
-  padding: 0.4rem 0.5rem calc(0.4rem + env(safe-area-inset-bottom));
-  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.05);
+  padding: 0.5rem 0.5rem calc(0.5rem + env(safe-area-inset-bottom));
+  box-shadow: 0 -6px 20px rgba(60, 40, 35, 0.06);
 }
 
 .nav-tab {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.15rem;
+  gap: 0.2rem;
   text-decoration: none;
   color: var(--muted);
   font-size: 0.72rem;
-  font-weight: 600;
+  font-weight: 700;
   padding: 0.35rem 0;
 }
 
 .nav-icon {
-  font-size: 1.35rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   line-height: 1;
-  opacity: 0.65;
-  filter: grayscale(0.4);
+  opacity: 0.7;
   transition:
     opacity 0.15s ease,
-    filter 0.15s ease;
+    color 0.15s ease,
+    transform 0.15s ease;
 }
 
 .nav-tab-active {
@@ -261,7 +362,6 @@ body {
 
 .nav-tab-active .nav-icon {
   opacity: 1;
-  filter: none;
 }
 
 /* Center "Cook" tab: a raised, always-colorful primary action. */
@@ -269,19 +369,23 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 3.25rem;
-  height: 3.25rem;
-  margin-top: -1.5rem;
+  width: 3.4rem;
+  height: 3.4rem;
+  margin-top: -1.6rem;
   border-radius: 50%;
-  background: var(--accent);
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 130%);
   color: var(--accent-ink);
   opacity: 1;
-  filter: none;
-  box-shadow: 0 6px 14px rgba(246, 165, 165, 0.5);
+  border: 3px solid var(--card);
+  box-shadow: 0 8px 18px rgba(234, 128, 146, 0.5);
+}
+
+.nav-tab-center:hover .nav-icon {
+  transform: translateY(-2px);
 }
 
 .nav-tab-center.nav-tab-active .nav-icon {
-  box-shadow: 0 8px 20px rgba(246, 165, 165, 0.7);
+  box-shadow: 0 10px 24px rgba(234, 128, 146, 0.65);
 }
 
 /* Tab page placeholders --------------------------------------------------- */
@@ -307,18 +411,35 @@ body {
 
 .cook-button {
   margin-top: 1.75rem;
-  width: 9rem;
-  height: 9rem;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  width: 9.5rem;
+  height: 9.5rem;
   border-radius: 50%;
   border: none;
-  background: var(--accent);
+  background: linear-gradient(140deg, var(--accent) 0%, var(--accent-2) 135%);
   color: var(--accent-ink);
-  font-size: 1.6rem;
-  font-weight: 800;
-  letter-spacing: 0.05em;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
   cursor: pointer;
-  box-shadow: 0 10px 24px rgba(246, 165, 165, 0.5);
-  transition: transform 0.1s ease;
+  box-shadow:
+    0 14px 30px rgba(234, 128, 146, 0.45),
+    inset 0 0 0 6px rgba(255, 255, 255, 0.35);
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.15s ease;
+}
+
+.cook-button:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 18px 36px rgba(234, 128, 146, 0.55),
+    inset 0 0 0 6px rgba(255, 255, 255, 0.4);
 }
 
 .cook-button:active {
@@ -373,23 +494,30 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
+  color: var(--muted);
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: 0.75rem;
+  border-radius: 0.8rem;
   cursor: pointer;
   transition:
     transform 0.1s ease,
-    border-color 0.1s ease;
+    color 0.12s ease,
+    border-color 0.12s ease,
+    box-shadow 0.12s ease;
 }
 
 .icon-option:hover {
-  transform: scale(1.05);
+  transform: translateY(-1px);
+  color: var(--ink);
+  border-color: var(--border-strong);
 }
 
-.icon-option-selected {
+.icon-option-selected,
+.icon-option-selected:hover {
+  color: var(--accent-ink);
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(246, 165, 165, 0.3);
+  background: var(--pastel-blush);
+  box-shadow: var(--ring);
 }
 
 /* Recipe card ------------------------------------------------------------- */
@@ -403,31 +531,33 @@ body {
   padding: 0.85rem;
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: 1rem;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
 }
 
 .recipe-card-button {
   cursor: pointer;
   transition:
-    transform 0.1s ease,
-    box-shadow 0.15s ease;
+    transform 0.12s ease,
+    box-shadow 0.18s ease,
+    border-color 0.15s ease;
 }
 
 .recipe-card-button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-md);
 }
 
 .recipe-card-icon {
   flex: none;
-  width: 3rem;
-  height: 3rem;
-  border-radius: 0.85rem;
+  width: 3.1rem;
+  height: 3.1rem;
+  border-radius: 0.9rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.6rem;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.05);
 }
 
 .recipe-card-body {
@@ -490,8 +620,8 @@ body {
   padding: 0.95rem;
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: 1rem;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
 }
 
 .session-card-head {
@@ -518,6 +648,28 @@ body {
   margin: 0;
   color: var(--muted);
   font-size: 0.85rem;
+}
+
+.session-card-duration {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  vertical-align: middle;
+}
+
+/* Brand lockup on the login card: a gradient rounded-square mark above the
+   title, like a logo. */
+.login-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: flex-start;
+  width: 3.25rem;
+  height: 3.25rem;
+  border-radius: 1rem;
+  color: var(--accent-ink);
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 130%);
+  box-shadow: 0 10px 22px rgba(234, 128, 146, 0.4);
 }
 
 .session-card-confirm {
@@ -640,8 +792,16 @@ body {
 }
 
 .recipes-empty-emoji {
-  margin: 0;
-  font-size: 2.75rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 4.5rem;
+  height: 4.5rem;
+  margin: 0 0 0.25rem;
+  border-radius: 50%;
+  color: var(--accent-ink);
+  background: linear-gradient(135deg, var(--pastel-blush) 0%, var(--pastel-lavender) 130%);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.04);
 }
 
 /* "+ New Recipe" chooser sheet -------------------------------------------- */
@@ -707,14 +867,14 @@ body {
 
 .sheet-option-icon {
   flex: none;
-  width: 2.75rem;
-  height: 2.75rem;
-  border-radius: 0.85rem;
-  background: var(--bg);
+  width: 2.9rem;
+  height: 2.9rem;
+  border-radius: 0.9rem;
+  color: var(--accent-ink);
+  background: linear-gradient(135deg, var(--pastel-blush) 0%, var(--pastel-peach) 130%);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
 }
 
 .sheet-option-body {
@@ -804,6 +964,11 @@ body {
 .button-danger {
   background: var(--error);
   color: #fff;
+  box-shadow: 0 6px 16px rgba(192, 57, 43, 0.28);
+}
+
+.button-danger:hover:not(:disabled) {
+  box-shadow: 0 10px 22px rgba(192, 57, 43, 0.36);
 }
 
 /* Editable sections (Ingredients / Prep / Steps) -------------------------- */
@@ -815,8 +980,8 @@ body {
   padding: 1rem;
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: 1rem;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
 }
 
 .editor-section-head {
@@ -953,8 +1118,16 @@ body {
 }
 
 .save-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
   font-size: 0.85rem;
   color: var(--muted);
+}
+
+.save-status-saved {
+  color: #2f8a5b;
+  font-weight: 700;
 }
 
 .save-status-error {
@@ -1003,6 +1176,9 @@ body {
 }
 
 .cook-timer {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
   font-variant-numeric: tabular-nums;
   font-weight: 700;
   font-size: 1.05rem;
@@ -1017,13 +1193,13 @@ body {
 
 .cook-recipe-icon {
   flex: none;
-  width: 2.5rem;
-  height: 2.5rem;
-  border-radius: 0.75rem;
+  width: 2.7rem;
+  height: 2.7rem;
+  border-radius: 0.8rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.4rem;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.05);
 }
 
 .cook-recipe-name {
@@ -1074,8 +1250,8 @@ body {
   padding: 1.25rem;
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: 1rem;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
 }
 
 .cook-stage-title {
@@ -1203,9 +1379,9 @@ body {
 .cook-progress-fill {
   display: block;
   height: 100%;
-  background: var(--accent);
+  background: linear-gradient(90deg, var(--accent) 0%, var(--accent-2) 100%);
   border-radius: 999px;
-  transition: width 0.2s ease;
+  transition: width 0.25s ease;
 }
 
 .cook-step-card {
@@ -1215,16 +1391,18 @@ body {
 
 .cook-step-number {
   flex: none;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2.6rem;
+  height: 2.6rem;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: var(--accent);
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 130%);
   color: var(--accent-ink);
-  font-weight: 800;
-  font-size: 1.2rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.25rem;
+  box-shadow: 0 5px 12px rgba(234, 128, 146, 0.4);
 }
 
 .cook-step-text {
@@ -1253,8 +1431,15 @@ body {
 }
 
 .cook-congrats-emoji {
-  font-size: 3.5rem;
-  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 5rem;
+  height: 5rem;
+  border-radius: 50%;
+  color: var(--accent-ink);
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 135%);
+  box-shadow: 0 12px 26px rgba(234, 128, 146, 0.45);
 }
 
 .cook-congrats-title {
@@ -1276,8 +1461,8 @@ body {
   padding: 1rem 2rem;
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: 1rem;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
 }
 
 .cook-congrats-time-label {
@@ -1484,6 +1669,12 @@ body {
 .cook-suggestion-status {
   font-size: 0.85rem;
   font-weight: 700;
+}
+
+.cook-suggestion-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
 }
 
 .cook-suggestion-status-approved {
