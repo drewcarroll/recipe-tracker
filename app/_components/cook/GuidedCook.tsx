@@ -1,6 +1,6 @@
 'use client';
 
-import { ArrowLeft, ArrowRight, Check, PartyPopper, Timer, X } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, NotebookPen, PartyPopper, Timer, X } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import type { RecipeDetail } from '@application/types';
@@ -8,19 +8,20 @@ import type { RecipeDetail } from '@application/types';
 import { getPastel } from '../../_design/palette';
 import { RecipeIcon } from '../RecipeIcon';
 import { Button } from '../ui/Button';
-import { DeviationRecorder } from './DeviationRecorder';
+import { CookNotepad } from './CookNotepad';
 import { NotesForNextTime } from './NotesForNextTime';
 
 /**
  * The guided cook flow (idea.md §3): walk the cook through a single recipe one
  * stage at a time — ingredients check → guided prep → steps one-by-one → a
  * Congrats screen — while timing how long the whole cook takes. Along the way
- * the cook can record deviations ("did something differently"), and on the
- * Congrats screen jot down "notes for next time".
+ * the cook can open a single notepad (the Notes icon, available on every
+ * working stage) to jot anything down, and on the Congrats screen write "notes
+ * for next time".
  *
  * When the cook leaves the flow ("Done"), it writes a single IMMUTABLE cook
  * session (idea.md §4): the recipe's contents frozen by value as a snapshot,
- * the deviations, the notes, the elapsed duration and a timestamp. Storing it
+ * the cook notes, the notes, the elapsed duration and a timestamp. Storing it
  * by value keeps it independent of the live recipe rows, so later edits —
  * including AI-approved suggestions from {@link NotesForNextTime} — never alter
  * this history entry. The saved session shows up in History and bumps the
@@ -67,10 +68,12 @@ export function GuidedCook({
   const [stepIndex, setStepIndex] = useState(0);
   const [checkedPrep, setCheckedPrep] = useState<ReadonlySet<string>>(new Set());
 
-  // Captured during the cook and folded into the session on finish. Deviations
-  // are recorded in-the-moment on the working stages; notes are written on the
-  // congrats screen (and double as the source for "notes for next time").
-  const [deviations, setDeviations] = useState<string[]>([]);
+  // Captured during the cook and folded into the session on finish. Cook notes
+  // come from the single in-cook notepad, opened from any working stage; notes
+  // are written on the congrats screen (and double as the source for "notes for
+  // next time").
+  const [cookNotes, setCookNotes] = useState('');
+  const [notepadOpen, setNotepadOpen] = useState(false);
   const [notes, setNotes] = useState('');
 
   // Elapsed-time tracking. The cook clock starts the moment the guided flow
@@ -96,17 +99,9 @@ export function GuidedCook({
     setStage('congrats');
   }, []);
 
-  const addDeviation = useCallback((text: string): void => {
-    setDeviations((prev) => [...prev, text]);
-  }, []);
-
-  const removeDeviation = useCallback((index: number): void => {
-    setDeviations((prev) => prev.filter((_, i) => i !== index));
-  }, []);
-
   // Persist the finished cook as a single IMMUTABLE session (idea.md §4): the
   // recipe's contents frozen by value (independent of the live rows), plus the
-  // deviations, notes, duration and timestamp. Written once, when the cook
+  // cook notes, notes, duration and timestamp. Written once, when the cook
   // leaves the flow. Returns whether the save succeeded.
   const persistSession = useCallback(async (): Promise<boolean> => {
     setSaveState('saving');
@@ -119,7 +114,7 @@ export function GuidedCook({
           recipeId: recipe.id,
           recipeName: recipe.name,
           durationSeconds: finalDuration ?? 0,
-          deviations,
+          cookNotes: cookNotes.trim(),
           notes: notes.trim(),
           snapshot: {
             ingredients: recipe.ingredients.map(({ name, quantity, unit }) => ({
@@ -141,7 +136,7 @@ export function GuidedCook({
       setSaveState('error');
       return false;
     }
-  }, [recipe, username, finalDuration, deviations, notes]);
+  }, [recipe, username, finalDuration, cookNotes, notes]);
 
   // "Done": save the session (once), then leave the flow. On failure we keep
   // the user on the congrats screen so they can retry rather than lose the cook.
@@ -191,18 +186,10 @@ export function GuidedCook({
             <span className="cook-congrats-time-value">{formatDuration(displaySeconds)}</span>
           </div>
 
-          {deviations.length > 0 && (
-            <div className="cook-congrats-deviations">
-              <span className="cook-congrats-deviations-label">
-                Deviation{deviations.length === 1 ? '' : 's'} recorded
-              </span>
-              <ul className="cook-deviation-list">
-                {deviations.map((deviation, index) => (
-                  <li key={index} className="cook-deviation-item">
-                    <span className="cook-deviation-text">{deviation}</span>
-                  </li>
-                ))}
-              </ul>
+          {cookNotes.trim().length > 0 && (
+            <div className="cook-congrats-notes">
+              <span className="cook-congrats-notes-label">Notes</span>
+              <p className="cook-congrats-notes-text">{cookNotes.trim()}</p>
             </div>
           )}
 
@@ -234,9 +221,19 @@ export function GuidedCook({
         <Button variant="ghost" onClick={onExit}>
           <X size={18} strokeWidth={2.2} /> Quit
         </Button>
-        <span className="cook-timer" aria-label="Elapsed cook time" role="timer">
-          <Timer size={18} strokeWidth={2.2} /> {formatDuration(displaySeconds)}
-        </span>
+        <div className="cook-flow-head-right">
+          <button
+            type="button"
+            className={`cook-notes-button${cookNotes.trim().length > 0 ? ' cook-notes-button-filled' : ''}`}
+            onClick={() => setNotepadOpen(true)}
+            aria-label={cookNotes.trim().length > 0 ? 'Edit notes' : 'Add notes'}
+          >
+            <NotebookPen size={18} strokeWidth={2.2} />
+          </button>
+          <span className="cook-timer" aria-label="Elapsed cook time" role="timer">
+            <Timer size={18} strokeWidth={2.2} /> {formatDuration(displaySeconds)}
+          </span>
+        </div>
       </header>
 
       <div className="cook-recipe-bar">
@@ -402,12 +399,8 @@ export function GuidedCook({
           </>
         ))}
 
-      {(stage === 'prep' || stage === 'steps') && (
-        <DeviationRecorder
-          deviations={deviations}
-          onAdd={addDeviation}
-          onRemove={removeDeviation}
-        />
+      {notepadOpen && (
+        <CookNotepad value={cookNotes} onChange={setCookNotes} onClose={() => setNotepadOpen(false)} />
       )}
     </section>
   );

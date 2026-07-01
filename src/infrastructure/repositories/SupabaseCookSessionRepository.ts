@@ -12,7 +12,7 @@ function toCookSession(row: CookSessionRow): CookSession {
     recipeId: row.recipe_id,
     recipeName: row.recipe_name,
     snapshot: row.snapshot,
-    deviations: row.deviations,
+    cookNotes: row.cook_notes,
     notes: row.notes,
     durationSeconds: row.duration_seconds,
     username: row.username,
@@ -32,7 +32,7 @@ export class SupabaseCookSessionRepository implements CookSessionRepository {
       recipeId: input.recipeId,
       recipeName: input.recipeName,
       snapshot: input.snapshot,
-      deviations: input.deviations,
+      cookNotes: input.cookNotes,
       notes: input.notes,
       durationSeconds: input.durationSeconds,
     });

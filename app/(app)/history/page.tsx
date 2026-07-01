@@ -11,7 +11,7 @@ import { useUser } from '../../_components/user-context';
 
 /**
  * History tab (idea.md §4): the list of past cook sessions, most recent first,
- * each showing its immutable snapshot (recipe name, deviations, notes, time
+ * each showing its immutable snapshot (recipe name, cook notes, notes, time
  * taken, timestamp). Sessions can be deleted from here; because a recipe's
  * "Times cooked" count is derived from its session count, deleting one makes
  * that count tick back down the next time the Recipes tab loads.

@@ -19,8 +19,8 @@ export interface CreateCookSessionInput {
   recipeName: string;
   /** Full recipe contents as-at-cook-time. */
   snapshot: RecipeSnapshot;
-  /** Things done differently during the cook. */
-  deviations?: string[];
+  /** Free-form notes from the single per-cook notepad. */
+  cookNotes?: string;
   /** Free-text "notes for next time". */
   notes?: string;
   /** How long the cook took, in seconds. */
@@ -43,7 +43,7 @@ export async function createCookSession(
         recipe_id: input.recipeId ?? null,
         recipe_name: input.recipeName,
         snapshot: input.snapshot,
-        deviations: input.deviations,
+        cook_notes: input.cookNotes,
         notes: input.notes,
         duration_seconds: input.durationSeconds,
         cooked_at: input.cookedAt,

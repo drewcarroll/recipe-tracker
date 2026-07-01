@@ -147,7 +147,7 @@ export interface Database {
           recipe_id: string | null;
           recipe_name: string;
           snapshot: RecipeSnapshot;
-          deviations: string[];
+          cook_notes: string;
           notes: string;
           duration_seconds: number;
           username: string | null;
@@ -159,7 +159,7 @@ export interface Database {
           recipe_id?: string | null;
           recipe_name: string;
           snapshot: RecipeSnapshot;
-          deviations?: string[];
+          cook_notes?: string;
           notes?: string;
           duration_seconds?: number;
           username?: string | null;
@@ -171,7 +171,7 @@ export interface Database {
           recipe_id?: string | null;
           recipe_name?: string;
           snapshot?: RecipeSnapshot;
-          deviations?: string[];
+          cook_notes?: string;
           notes?: string;
           duration_seconds?: number;
           username?: string | null;

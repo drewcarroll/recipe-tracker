@@ -5,7 +5,7 @@ import { createCookSessionInputSchema, usernameSchema, type CookSession } from '
 
 /**
  * Accepted input: the schema's *input* shape, so fields with defaults
- * (deviations, notes, durationSeconds) are optional for callers. The use case
+ * (cookNotes, notes, durationSeconds) are optional for callers. The use case
  * applies the defaults via `parse` before persisting.
  */
 type LogCookSessionInput = z.input<typeof createCookSessionInputSchema>;
@@ -14,8 +14,8 @@ type LogCookSessionInput = z.input<typeof createCookSessionInputSchema>;
  * Record one completed guided cook (idea.md §3, §4): freeze the recipe's
  * contents into an immutable snapshot and log how long the cook took. This is
  * what makes a recipe's "Times cooked" count tick up and gives the History tab
- * something to show. Deviations and post-cook notes arrive with the later §3
- * work, so they default to empty here.
+ * something to show. The per-cook notepad and post-cook notes default to empty
+ * here when a caller omits them.
  */
 export class LogCookSessionUseCase {
   constructor(private readonly sessions: CookSessionRepository) {}

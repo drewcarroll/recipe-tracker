@@ -703,15 +703,6 @@ svg {
   color: var(--muted);
 }
 
-.session-card-deviations {
-  margin: 0;
-  padding-left: 1.1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-  font-size: 0.92rem;
-}
-
 .session-card-notes {
   margin: 0;
   font-size: 0.92rem;
@@ -1484,7 +1475,7 @@ svg {
   margin-top: 0.75rem;
 }
 
-.cook-congrats-deviations {
+.cook-congrats-notes {
   width: 100%;
   text-align: left;
   display: flex;
@@ -1493,85 +1484,84 @@ svg {
   margin-top: 1rem;
 }
 
-.cook-congrats-deviations-label {
+.cook-congrats-notes-label {
   font-size: 0.78rem;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: var(--muted);
 }
 
-/* Deviation capture during the cook (idea.md §3) ------------------------- */
-
-.cook-deviations {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
-  padding: 0.9rem;
-  background: var(--card);
-  border: 1px dashed var(--border);
-  border-radius: 1rem;
-}
-
-.cook-deviations-title {
+.cook-congrats-notes-text {
   margin: 0;
-  font-size: 1rem;
+  font-size: 0.92rem;
+  white-space: pre-wrap;
 }
 
-.cook-deviations-hint {
+/* Per-cook notepad: header trigger + the popup (idea.md §3) --------------- */
+
+.cook-flow-head-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.cook-notes-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 0.7rem;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--accent-ink);
+  cursor: pointer;
+  transition:
+    border-color 0.12s ease,
+    background 0.12s ease,
+    transform 0.1s ease;
+}
+
+.cook-notes-button:hover {
+  transform: translateY(-1px);
+  border-color: var(--accent);
+}
+
+/* When notes exist, fill the trigger so the cook can see something's saved. */
+.cook-notes-button-filled {
+  background: linear-gradient(135deg, var(--pastel-blush) 0%, var(--pastel-peach) 130%);
+  border-color: transparent;
+}
+
+.cook-notepad-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.cook-notepad-close {
+  flex: none;
+  border: none;
+  background: none;
+  color: var(--muted);
+  line-height: 1;
+  padding: 0.2rem;
+  cursor: pointer;
+}
+
+.cook-notepad-close:hover {
+  color: var(--ink);
+}
+
+.cook-notepad-hint {
   margin: 0;
   color: var(--muted);
   font-size: 0.85rem;
 }
 
-.cook-deviation-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-}
-
-.cook-deviation-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-  padding: 0.4rem 0.6rem;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 0.6rem;
-  font-size: 0.92rem;
-}
-
-.cook-deviation-text {
-  min-width: 0;
-}
-
-.cook-deviation-remove {
-  flex: none;
-  border: none;
-  background: none;
-  color: var(--muted);
-  font-size: 0.95rem;
-  line-height: 1;
-  padding: 0.15rem;
-  cursor: pointer;
-}
-
-.cook-deviation-remove:hover {
-  color: var(--error);
-}
-
-.cook-deviation-add {
-  display: flex;
-  gap: 0.4rem;
-}
-
-.cook-deviation-input {
-  flex: 1;
-  min-width: 0;
+.cook-notepad-input {
+  min-height: 8rem;
 }
 
 /* Notes for next time + suggested changes (idea.md §3) ------------------- */

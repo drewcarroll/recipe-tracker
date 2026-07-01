@@ -141,15 +141,6 @@ export const recipeDetailSchema = z.object({
 export type RecipeDetail = z.infer<typeof recipeDetailSchema>;
 
 // ---------------------------------------------------------------------------
-// Deviation — something done differently during a cook (idea.md §3).
-// Free-text note, stored on the session (matches the `deviations` jsonb column,
-// an array of notes).
-// ---------------------------------------------------------------------------
-
-export const deviationSchema = z.string().min(1);
-export type Deviation = z.infer<typeof deviationSchema>;
-
-// ---------------------------------------------------------------------------
 // Recipe snapshot — IMMUTABLE copy of a recipe's contents as-at-cook-time
 // (idea.md §4, acceptance criterion 3). Self-contained: stores ingredient
 // values / prep text / step text by value so later recipe edits never alter
@@ -179,7 +170,8 @@ export const cookSessionSchema = z.object({
   /** Recipe name frozen at cook time. */
   recipeName: z.string().min(1),
   snapshot: recipeSnapshotSchema,
-  deviations: z.array(deviationSchema),
+  /** Free-form notes jotted in the single per-cook notepad (idea.md §3). */
+  cookNotes: z.string(),
   notes: z.string(),
   durationSeconds: z.number().int().nonnegative(),
   username: usernameSchema.nullable(),
@@ -340,7 +332,7 @@ export const createCookSessionInputSchema = z.object({
   recipeId: z.string().uuid().nullable(),
   recipeName: z.string().min(1),
   snapshot: recipeSnapshotSchema,
-  deviations: z.array(deviationSchema).default([]),
+  cookNotes: z.string().default(''),
   notes: z.string().default(''),
   durationSeconds: z.number().int().nonnegative().default(0),
 });

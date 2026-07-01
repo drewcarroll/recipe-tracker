@@ -9,10 +9,10 @@ import { Button } from './ui/Button';
 
 /**
  * One entry in the Cook History list (idea.md §4): the frozen snapshot of a
- * past cook — recipe name, when it happened, how long it took, any deviations
- * and post-cook notes — plus a delete control. Purely presentational; deletion
- * is handed up to the History page via `onDelete` so the data flow stays in one
- * place.
+ * past cook — recipe name, when it happened, how long it took, the cook's
+ * notepad notes and post-cook notes — plus a delete control. Purely
+ * presentational; deletion is handed up to the History page via `onDelete` so
+ * the data flow stays in one place.
  */
 
 /** Format a duration in seconds as `m:ss` (or `h:mm:ss` past an hour). */
@@ -49,7 +49,7 @@ export function CookSessionCard({
 }): JSX.Element {
   const [confirming, setConfirming] = useState(false);
 
-  const { snapshot, deviations, notes } = session;
+  const { snapshot, cookNotes, notes } = session;
   const summaryParts = [
     `${snapshot.ingredients.length} ingredient${snapshot.ingredients.length === 1 ? '' : 's'}`,
     `${snapshot.steps.length} step${snapshot.steps.length === 1 ? '' : 's'}`,
@@ -97,14 +97,10 @@ export function CookSessionCard({
 
       <p className="session-card-summary">{summaryParts.join(' · ')}</p>
 
-      {deviations.length > 0 && (
+      {cookNotes.trim().length > 0 && (
         <div className="session-card-section">
-          <h3 className="session-card-section-title">Deviations</h3>
-          <ul className="session-card-deviations">
-            {deviations.map((deviation, index) => (
-              <li key={index}>{deviation}</li>
-            ))}
-          </ul>
+          <h3 className="session-card-section-title">Notes</h3>
+          <p className="session-card-notes">{cookNotes}</p>
         </div>
       )}
 
