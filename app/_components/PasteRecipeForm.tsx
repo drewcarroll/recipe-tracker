@@ -38,13 +38,18 @@ export function PasteRecipeForm(): JSX.Element {
         body: JSON.stringify({ username, text: text.trim() }),
       });
       if (!response.ok) {
-        throw new Error('Convert failed');
+        // Surface the server's specific message (e.g. "Recipe too long!")
+        // rather than a one-size-fits-all failure.
+        const body = (await response.json().catch(() => null)) as { error?: string } | null;
+        throw new Error(body?.error ?? 'We couldn’t turn that into a recipe. Please try again.');
       }
       const { recipe } = (await response.json()) as { recipe: RecipeSummary };
       // Open the freshly-parsed recipe in its editor so the user can tweak it.
       router.replace(`/recipes/${recipe.id}` as Route);
-    } catch {
-      setError('We couldn’t turn that into a recipe. Please try again.');
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : 'We couldn’t turn that into a recipe. Please try again.',
+      );
       setSubmitting(false);
     }
   };
